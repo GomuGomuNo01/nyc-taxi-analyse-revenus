@@ -1,0 +1,11 @@
+data/raw/*.csv
+data/raw/*.csv.gz
+data/bronze/
+data/silver/
+data/gold/
+data/audit/
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+.venv/

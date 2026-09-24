@@ -2,36 +2,74 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "84423228f81934fd82a0",
   "position": {
-    "x": 20,
-    "y": 150,
+    "x": 996,
+    "y": 66,
     "z": 5000,
-    "height": 96,
-    "width": 196,
+    "height": 72,
+    "width": 264,
     "tabOrder": 5000
   },
   "visual": {
-    "visualType": "card",
+    "visualType": "slicer",
     "query": {
       "queryState": {
         "Values": {
           "projections": [
             {
               "field": {
-                "Measure": {
+                "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "_Mesures"
+                      "Entity": "dim_date"
                     }
                   },
-                  "Property": "Courses"
+                  "Property": "Jour"
                 }
               },
-              "queryRef": "_Mesures.Courses",
-              "nativeQueryRef": "Courses"
+              "queryRef": "dim_date.Jour",
+              "nativeQueryRef": "Jour",
+              "active": true
             }
           ]
         }
       }
+    },
+    "objects": {
+      "data": [
+        {
+          "properties": {
+            "mode": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Dropdown'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Jour de la semaine'"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   }

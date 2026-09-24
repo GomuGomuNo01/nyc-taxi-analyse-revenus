@@ -1,2 +1,2 @@
-expression DossierDonnees = "C:\A_REMPLACER\nyc-taxi-data-engineering\powerbi\data\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression DossierDonnees = "D:\PROJET PERSO\DATA\Big Data - Data Enginee\nyc-taxi-data-engineering\powerbi\data\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 	annotation PBI_ResultType = Text

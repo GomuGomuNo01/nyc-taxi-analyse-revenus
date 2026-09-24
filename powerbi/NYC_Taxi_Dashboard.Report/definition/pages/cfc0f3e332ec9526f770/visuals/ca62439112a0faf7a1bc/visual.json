@@ -2,103 +2,36 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "ca62439112a0faf7a1bc",
   "position": {
-    "x": 20,
-    "y": 66,
+    "x": 730,
+    "y": 14,
     "z": 1000,
-    "height": 300,
-    "width": 610,
+    "height": 40,
+    "width": 530,
     "tabOrder": 1000
   },
   "visual": {
-    "visualType": "clusteredColumnChart",
-    "query": {
-      "queryState": {
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "fact_trips_agg"
-                    }
-                  },
-                  "Property": "Type de course"
-                }
-              },
-              "queryRef": "fact_trips_agg.Type de course",
-              "nativeQueryRef": "Type de course",
-              "active": true
-            }
-          ]
-        },
-        "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Mesures"
-                    }
-                  },
-                  "Property": "Revenu par minute"
-                }
-              },
-              "queryRef": "_Mesures.Revenu par minute",
-              "nativeQueryRef": "Revenu par minute"
-            }
-          ]
-        }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Measure": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "_Mesures"
-                  }
-                },
-                "Property": "Revenu par minute"
-              }
-            },
-            "direction": "Descending"
-          }
-        ]
-      }
-    },
-    "objects": {
-      "labels": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
+    "visualType": "pageNavigator",
     "visualContainerObjects": {
-      "title": [
+      "background": [
         {
           "properties": {
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "false"
                 }
               }
-            },
-            "text": {
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
               "expr": {
                 "Literal": {
-                  "Value": "'Revenu par minute par type de course'"
+                  "Value": "false"
                 }
               }
             }

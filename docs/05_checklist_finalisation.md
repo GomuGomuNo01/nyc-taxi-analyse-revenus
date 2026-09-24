@@ -17,8 +17,8 @@ Détail : [docs/03_guide_powerbi.md](03_guide_powerbi.md), sections 2 et 3.
 
 - [ ] 🟨 Mettre Power BI Desktop à jour si sa version est antérieure à mai 2025.
 - [ ] 🟨 Ouvrir `powerbi/NYC_Taxi_Dashboard.pbip`.
-- [ ] 🟨 *Transformer les données* > *Modifier les paramètres* : `DossierDonnees` = chemin de `powerbi\data\` (avec `\` final).
-- [ ] 🟨 *Appliquer les modifications* puis vérifier la **recette** (7 440 812 courses, 114,8 M$, 1,19 $/min, 97,04 %).
+- [x] 🟨 `DossierDonnees` renseigné automatiquement par `generer_pbip.py` (à relancer si le dépôt change de dossier).
+- [ ] 🟨 *Actualiser maintenant* puis vérifier la **recette** (7 440 812 courses, 114,8 M$, 1,19 $/min, 97,04 %).
 - [ ] 🟨 Parcourir les 5 pages, vérifier qu'aucun visuel n'est en erreur (sinon : tableau de dépannage du guide).
 - [ ] 🟨 Parcourir la vue **Modèle** et la table `_Mesures` : savoir expliquer chaque relation et les mesures clés.
 
@@ -26,17 +26,18 @@ Détail : [docs/03_guide_powerbi.md](03_guide_powerbi.md), sections 2 et 3.
 
 - [ ] 🟨 Retouches visuelles personnelles (polices, couleurs, unités des cartes).
 - [ ] 🟨 Ajouter la ligne moyenne sur « Revenu par minute selon l'heure » (volet *Analytique*).
-- [ ] 🟨 Ajouter un navigateur de pages et synchroniser les segments.
+- [x] 🟨 Navigateur de pages (généré sur chaque page).
+- [ ] 🟨 Synchroniser les segments de la page 1 sur les autres pages (optionnel).
 - [ ] 🟨 Tester l'interactivité : cliquer sur « Aéroport » dans un visuel et observer le filtrage croisé.
 - [ ] 🟨 *Fichier* > *Enregistrer* (Ctrl+S).
 
 ## Étape 4 : Produire les livrables (20 min)
 
-- [ ] 🟨 *Enregistrer sous* > `powerbi/NYC_Taxi_Dashboard.pbix`.
-- [ ] 🟨 *Exporter* > *PDF* > `powerbi/NYC_Taxi_Dashboard.pdf`.
-- [ ] 🟨 5 captures d'écran dans `docs/images/` : `dashboard_1_vue_ensemble.png`, `dashboard_2_quand.png`,
+- [x] 🟨 *Enregistrer sous* > `powerbi/NYC_Taxi_Dashboard.pbix`.
+- [x] 🟨 *Exporter* > *PDF* > `powerbi/NYC_Taxi_Dashboard.pdf`.
+- [x] 🟨 5 captures d'écran dans `docs/images/` : `dashboard_1_vue_ensemble.png`, `dashboard_2_quand.png`,
       `dashboard_3_ou.png`, `dashboard_4_rentabilite.png`, `dashboard_5_qualite.png`.
-- [ ] 🟦 Dans `README.md` (section 8), supprimer les lignes `<!--` et `-->` autour des images du dashboard.
+- [x] 🟦 Dans `README.md` (section 8), supprimer les lignes `<!--` et `-->` autour des images du dashboard.
 - [ ] 🟦 Si tu as modifié des chiffres ou des visuels, vérifier la cohérence avec le README et `docs/04_synthese_resultats.md`.
 
 ## Étape 5 : Publier sur GitHub (15 min)

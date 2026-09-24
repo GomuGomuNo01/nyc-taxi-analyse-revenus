@@ -2,87 +2,20 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "04f22e666250b0ff697f",
   "position": {
-    "x": 20,
-    "y": 66,
+    "x": 730,
+    "y": 14,
     "z": 1000,
-    "height": 270,
-    "width": 1240,
+    "height": 40,
+    "width": 530,
     "tabOrder": 1000
   },
   "visual": {
-    "visualType": "pivotTable",
-    "query": {
-      "queryState": {
-        "Rows": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_date"
-                    }
-                  },
-                  "Property": "Jour"
-                }
-              },
-              "queryRef": "dim_date.Jour",
-              "nativeQueryRef": "Jour",
-              "active": true
-            }
-          ]
-        },
-        "Columns": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_hour"
-                    }
-                  },
-                  "Property": "Heure"
-                }
-              },
-              "queryRef": "dim_hour.Heure",
-              "nativeQueryRef": "Heure",
-              "active": true
-            }
-          ]
-        },
-        "Values": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Mesures"
-                    }
-                  },
-                  "Property": "Courses par jour (hors fériés)"
-                }
-              },
-              "queryRef": "_Mesures.Courses par jour (hors fériés)",
-              "nativeQueryRef": "Courses par jour (hors fériés"
-            }
-          ]
-        }
-      }
-    },
-    "objects": {
-      "subTotals": [
+    "visualType": "pageNavigator",
+    "visualContainerObjects": {
+      "background": [
         {
           "properties": {
-            "rowSubtotals": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            },
-            "columnSubtotals": {
+            "show": {
               "expr": {
                 "Literal": {
                   "Value": "false"
@@ -92,78 +25,13 @@
           }
         }
       ],
-      "values": [
-        {
-          "properties": {
-            "backColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "FillRule": {
-                      "Input": {
-                        "SelectRef": {
-                          "ExpressionName": "_Mesures.Courses par jour (hors fériés)"
-                        }
-                      },
-                      "FillRule": {
-                        "linearGradient2": {
-                          "min": {
-                            "color": {
-                              "Literal": {
-                                "Value": "'#F0F5FC'"
-                              }
-                            }
-                          },
-                          "max": {
-                            "color": {
-                              "Literal": {
-                                "Value": "'#1C5CAB'"
-                              }
-                            }
-                          },
-                          "nullColoringStrategy": {
-                            "strategy": {
-                              "Literal": {
-                                "Value": "'asZero'"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "selector": {
-            "data": [
-              {
-                "dataViewWildcard": {
-                  "matchingOption": 1
-                }
-              }
-            ],
-            "metadata": "_Mesures.Courses par jour (hors fériés)"
-          }
-        }
-      ]
-    },
-    "visualContainerObjects": {
-      "title": [
+      "border": [
         {
           "properties": {
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Nombre moyen de courses par heure et jour de semaine (hors jours fériés)'"
+                  "Value": "false"
                 }
               }
             }

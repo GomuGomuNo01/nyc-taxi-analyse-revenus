@@ -110,6 +110,16 @@ table _Mesures
 		formatString: 0.00 %
 		displayFolder: 5. Qualité
 
+	/// Nombre de courses d'une étape ou d'un motif du pipeline
+	measure 'Courses (étape)' = SUM ( data_quality[Nb courses] )
+		formatString: #,0
+		displayFolder: 5. Qualité
+
+	/// Poids d'une étape ou d'un motif dans les courses brutes
+	measure 'Part des courses brutes' = SUM ( data_quality[Part du brut] )
+		formatString: 0.00 %
+		displayFolder: 5. Qualité
+
 	/// Courses écartées, par motif
 	measure 'Rejets et anomalies' = CALCULATE ( SUM ( data_quality[Nb courses] ), data_quality[Catégorie] IN { "Rejet", "Anomalie" } )
 		formatString: #,0

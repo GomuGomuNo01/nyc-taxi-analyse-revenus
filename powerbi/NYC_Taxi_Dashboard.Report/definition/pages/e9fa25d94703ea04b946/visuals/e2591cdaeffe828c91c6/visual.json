@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "e2591cdaeffe828c91c6",
   "position": {
-    "x": 432,
+    "x": 20,
     "y": 66,
     "z": 2000,
     "height": 72,
-    "width": 270,
+    "width": 400,
     "tabOrder": 2000
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "fact_trips_agg"
+                      "Entity": "dim_date"
                     }
                   },
-                  "Property": "Type de course"
+                  "Property": "Date"
                 }
               },
-              "queryRef": "fact_trips_agg.Type de course",
-              "nativeQueryRef": "Type de course",
+              "queryRef": "dim_date.Date",
+              "nativeQueryRef": "Date",
               "active": true
             }
           ]
@@ -41,7 +41,7 @@
             "mode": {
               "expr": {
                 "Literal": {
-                  "Value": "'Dropdown'"
+                  "Value": "'Between'"
                 }
               }
             }
@@ -63,7 +63,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Type de course'"
+                  "Value": "'Période'"
                 }
               }
             }

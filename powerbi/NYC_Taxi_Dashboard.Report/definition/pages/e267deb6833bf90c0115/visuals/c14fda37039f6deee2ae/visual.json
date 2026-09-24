@@ -2,15 +2,15 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "c14fda37039f6deee2ae",
   "position": {
-    "x": 592,
+    "x": 20,
     "y": 66,
     "z": 2000,
     "height": 320,
-    "width": 668,
+    "width": 560,
     "tabOrder": 2000
   },
   "visual": {
-    "visualType": "scatterChart",
+    "visualType": "clusteredBarChart",
     "query": {
       "queryState": {
         "Category": {
@@ -32,43 +32,6 @@
             }
           ]
         },
-        "Series": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_zone"
-                    }
-                  },
-                  "Property": "Borough"
-                }
-              },
-              "queryRef": "dim_zone.Borough",
-              "nativeQueryRef": "Borough",
-              "active": true
-            }
-          ]
-        },
-        "X": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Mesures"
-                    }
-                  },
-                  "Property": "Courses"
-                }
-              },
-              "queryRef": "_Mesures.Courses",
-              "nativeQueryRef": "Courses"
-            }
-          ]
-        },
         "Y": {
           "projections": [
             {
@@ -79,33 +42,48 @@
                       "Entity": "_Mesures"
                     }
                   },
-                  "Property": "Revenu par minute"
+                  "Property": "CA top 10 zones"
                 }
               },
-              "queryRef": "_Mesures.Revenu par minute",
-              "nativeQueryRef": "Revenu par minute"
-            }
-          ]
-        },
-        "Size": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Mesures"
-                    }
-                  },
-                  "Property": "Chiffre d'affaires"
-                }
-              },
-              "queryRef": "_Mesures.Chiffre d'affaires",
-              "nativeQueryRef": "Chiffre d'affaires"
+              "queryRef": "_Mesures.CA top 10 zones",
+              "nativeQueryRef": "CA top 10 zones",
+              "displayName": "Chiffre d'affaires"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Mesures"
+                  }
+                },
+                "Property": "CA top 10 zones"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [
@@ -121,7 +99,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Volume vs productivité par zone (taille = CA)'"
+                  "Value": "'Top 10 des zones par chiffre d''affaires'"
                 }
               }
             }

@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "271229fe71ae45ba8582",
   "position": {
-    "x": 648,
+    "x": 334,
     "y": 66,
     "z": 3000,
     "height": 96,
@@ -23,15 +23,30 @@
                       "Entity": "_Mesures"
                     }
                   },
-                  "Property": "Courses analysées"
+                  "Property": "Courses écartées"
                 }
               },
-              "queryRef": "_Mesures.Courses analysées",
-              "nativeQueryRef": "Courses analysées"
+              "queryRef": "_Mesures.Courses écartées",
+              "nativeQueryRef": "Courses écartées"
             }
           ]
         }
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1.0D"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   }

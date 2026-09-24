@@ -2,45 +2,131 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "08949d056203bfd753c0",
   "position": {
-    "x": 20,
-    "y": 602,
+    "x": 732,
+    "y": 174,
     "z": 7000,
-    "height": 106,
-    "width": 1240,
+    "height": 416,
+    "width": 528,
     "tabOrder": 7000
   },
   "visual": {
-    "visualType": "textbox",
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "data_quality"
+                    }
+                  },
+                  "Property": "Étape"
+                }
+              },
+              "queryRef": "data_quality.Étape",
+              "nativeQueryRef": "Étape"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "data_quality"
+                    }
+                  },
+                  "Property": "Motif"
+                }
+              },
+              "queryRef": "data_quality.Motif",
+              "nativeQueryRef": "Motif"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Courses (étape)"
+                }
+              },
+              "queryRef": "_Mesures.Courses (étape)",
+              "nativeQueryRef": "Courses (étape)",
+              "displayName": "Courses"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Part des courses brutes"
+                }
+              },
+              "queryRef": "_Mesures.Part des courses brutes",
+              "nativeQueryRef": "Part des courses brutes",
+              "displayName": "Part du brut"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "data_quality"
+                  }
+                },
+                "Property": "Étape"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
     "objects": {
-      "general": [
+      "total": [
         {
           "properties": {
-            "paragraphs": [
-              {
-                "textRuns": [
-                  {
-                    "value": "À retenir",
-                    "textStyle": {
-                      "fontSize": "11pt",
-                      "fontWeight": "bold",
-                      "color": "#104281"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "97,04 % des courses brutes sont exploitables. 99,9 % des rejets « Aucun passager » viennent d'un seul fournisseur de taximètre : un défaut de saisie systémique, à lui signaler.",
-                    "textStyle": {
-                      "fontSize": "11pt",
-                      "fontWeight": "normal",
-                      "color": "#0B0B0B"
-                    }
-                  }
-                ]
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
               }
-            ]
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Détail par étape du pipeline'"
+                }
+              }
+            }
           }
         }
       ]

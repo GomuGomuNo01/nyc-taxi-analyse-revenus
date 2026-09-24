@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "4d4fb1211aafc922093d",
   "position": {
-    "x": 437,
+    "x": 20,
     "y": 348,
     "z": 3000,
     "height": 238,
@@ -10,7 +10,7 @@
     "tabOrder": 3000
   },
   "visual": {
-    "visualType": "lineChart",
+    "visualType": "clusteredColumnChart",
     "query": {
       "queryState": {
         "Category": {
@@ -23,12 +23,13 @@
                       "Entity": "dim_hour"
                     }
                   },
-                  "Property": "Heure"
+                  "Property": "N° heure"
                 }
               },
-              "queryRef": "dim_hour.Heure",
-              "nativeQueryRef": "Heure",
-              "active": true
+              "queryRef": "dim_hour.N° heure",
+              "nativeQueryRef": "N° heure",
+              "active": true,
+              "displayName": "Heure"
             }
           ]
         },
@@ -42,11 +43,11 @@
                       "Entity": "_Mesures"
                     }
                   },
-                  "Property": "Revenu par minute"
+                  "Property": "Courses"
                 }
               },
-              "queryRef": "_Mesures.Revenu par minute",
-              "nativeQueryRef": "Revenu par minute"
+              "queryRef": "_Mesures.Courses",
+              "nativeQueryRef": "Courses"
             }
           ]
         }
@@ -61,13 +62,35 @@
                     "Entity": "dim_hour"
                   }
                 },
-                "Property": "Heure"
+                "Property": "N° heure"
               }
             },
             "direction": "Ascending"
           }
         ]
       }
+    },
+    "objects": {
+      "categoryAxis": [
+        {
+          "properties": {
+            "axisType": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Scalar'"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [
@@ -83,7 +106,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Revenu par minute selon l''heure'"
+                  "Value": "'Courses par heure'"
                 }
               }
             }

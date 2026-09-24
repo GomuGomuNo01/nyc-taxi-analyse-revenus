@@ -2,37 +2,18 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "15ac0f89971c2ddaadcd",
   "position": {
-    "x": 20,
-    "y": 258,
+    "x": 1060,
+    "y": 150,
     "z": 11000,
-    "height": 320,
-    "width": 760,
+    "height": 96,
+    "width": 196,
     "tabOrder": 11000
   },
   "visual": {
-    "visualType": "lineChart",
+    "visualType": "card",
     "query": {
       "queryState": {
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_date"
-                    }
-                  },
-                  "Property": "Date"
-                }
-              },
-              "queryRef": "dim_date.Date",
-              "nativeQueryRef": "Date",
-              "active": true
-            }
-          ]
-        },
-        "Y": {
+        "Values": {
           "projections": [
             {
               "field": {
@@ -42,31 +23,24 @@
                       "Entity": "_Mesures"
                     }
                   },
-                  "Property": "Chiffre d'affaires"
+                  "Property": "Taux de pourboire (carte)"
                 }
               },
-              "queryRef": "_Mesures.Chiffre d'affaires",
-              "nativeQueryRef": "Chiffre d'affaires"
+              "queryRef": "_Mesures.Taux de pourboire (carte)",
+              "nativeQueryRef": "Taux de pourboire (carte)"
             }
           ]
         }
       }
     },
-    "visualContainerObjects": {
-      "title": [
+    "objects": {
+      "labels": [
         {
           "properties": {
-            "show": {
+            "labelDisplayUnits": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Chiffre d''affaires par jour (creux le dimanche et les jours fériés)'"
+                  "Value": "1.0D"
                 }
               }
             }

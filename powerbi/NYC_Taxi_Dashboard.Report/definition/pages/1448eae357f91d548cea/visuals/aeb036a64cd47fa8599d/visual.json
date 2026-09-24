@@ -2,45 +2,106 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "aeb036a64cd47fa8599d",
   "position": {
-    "x": 20,
-    "y": 598,
+    "x": 854,
+    "y": 348,
     "z": 5000,
-    "height": 110,
-    "width": 1240,
+    "height": 238,
+    "width": 406,
     "tabOrder": 5000
   },
   "visual": {
-    "visualType": "textbox",
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_hour"
+                    }
+                  },
+                  "Property": "Créneau"
+                }
+              },
+              "queryRef": "dim_hour.Créneau",
+              "nativeQueryRef": "Créneau",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Revenu par minute"
+                }
+              },
+              "queryRef": "_Mesures.Revenu par minute",
+              "nativeQueryRef": "Revenu par minute"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_hour"
+                  }
+                },
+                "Property": "Créneau"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
     "objects": {
-      "general": [
+      "labels": [
         {
           "properties": {
-            "paragraphs": [
-              {
-                "textRuns": [
-                  {
-                    "value": "À retenir",
-                    "textStyle": {
-                      "fontSize": "11pt",
-                      "fontWeight": "bold",
-                      "color": "#104281"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "Le pic de demande est à 18h, mais le revenu par minute chute de 35 % entre 5h et 8h-9h à cause de la congestion (vitesse divisée par deux). Les nuits du week-end sont 3 fois plus actives que celles de semaine.",
-                    "textStyle": {
-                      "fontSize": "11pt",
-                      "fontWeight": "normal",
-                      "color": "#0B0B0B"
-                    }
-                  }
-                ]
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
               }
-            ]
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Revenu par minute par créneau'"
+                }
+              }
+            }
           }
         }
       ]

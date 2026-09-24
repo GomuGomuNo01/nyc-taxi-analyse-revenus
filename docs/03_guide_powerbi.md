@@ -27,14 +27,14 @@ powerbi/
 │   └── definition/pages/<page>/visuals/<visuel>/visual.json
 ├── data/*.parquet                       # Les données
 ├── generer_pbip.py                      # Le script qui génère tout le projet
-├── mesures_dax.dax                      # Les 24 mesures, lisibles en un seul fichier
+├── mesures_dax.dax                      # Les 26 mesures, lisibles en un seul fichier
 └── theme_nyc_taxi.json                  # Le thème (couleurs, polices)
 ```
 
 C'est la pratique « **BI as code** » : le rapport est versionné, relu et reproductible comme du code.
 Le projet a été validé avant livraison :
-- modèle chargé avec la bibliothèque officielle de Microsoft (Tabular Object Model) : 7 tables, 4 relations, 24 mesures, toutes les références DAX résolues ;
-- 53 fichiers du rapport validés contre les schémas JSON officiels de Microsoft ;
+- modèle chargé avec la bibliothèque officielle de Microsoft (Tabular Object Model) : 7 tables, 4 relations, 26 mesures, toutes les références DAX résolues ;
+- 57 fichiers du rapport validés contre les schémas JSON officiels de Microsoft ;
 - types de visuels et noms de rôles vérifiés sur 58 rapports d'exemple publiés par Microsoft.
 
 ---
@@ -58,15 +58,14 @@ Le projet a été validé avant livraison :
 2. Les visuels sont vides ou en erreur : c'est normal, les données ne sont pas encore chargées.
    Le projet ne contient que la **définition** du rapport, pas de copie des données.
 
-3. **Indiquer le dossier des données** : *Accueil* > **Transformer les données** (flèche du bas) >
-   **Modifier les paramètres** [Edit parameters]. Dans `DossierDonnees`, colle le chemin complet du
-   dossier `powerbi\data\` **avec la barre oblique inverse finale**, par exemple :
-   `C:\Users\Cedric\IdeaProjects\nyc-taxi-data-engineering\powerbi\data\`
+3. **Dossier des données** : le paramètre `DossierDonnees` est renseigné automatiquement par
+   `generer_pbip.py` avec le chemin absolu de `powerbi\data\` sur le poste où le script a été lancé
+   (Power Query n'accepte pas de chemin relatif). Si le dépôt a été cloné ou déplacé ailleurs :
+   relance `python powerbi/generer_pbip.py`, ou bien *Accueil* > **Transformer les données** (flèche du bas) >
+   **Modifier les paramètres** [Edit parameters] et colle le chemin de `powerbi\data\`
+   **avec la barre oblique inverse finale**.
 
-   Astuce : dans l'Explorateur Windows, ouvre le dossier `powerbi\data`, clique dans la barre d'adresse,
-   copie le chemin et ajoute `\` à la fin.
-
-4. Clique sur **OK**, puis sur **Appliquer les modifications** dans le bandeau jaune (ou *Accueil* > **Actualiser**).
+4. Clique sur **Actualiser maintenant** dans le bandeau jaune (ou *Accueil* > **Actualiser**).
    Le chargement prend quelques secondes (640 000 lignes).
 
 5. **Recette** : sur la page *1. Vue d'ensemble*, sans filtre, vérifie les cartes :
@@ -110,7 +109,7 @@ Ouvre la vue **Modèle** (troisième icône à gauche).
 - **Relations plusieurs-à-un, filtrage unidirectionnel** : un filtre sur une dimension (par exemple
   « Samedi ») se propage vers les faits, jamais l'inverse. C'est le comportement le plus prévisible.
 - **`data_quality`** est indépendante (pas de relation) : c'est une table de synthèse de la qualité.
-- **`_Mesures`** regroupe les 24 mesures, rangées en dossiers (Volume et CA, Productivité, Parts...).
+- **`_Mesures`** regroupe les 26 mesures, rangées en dossiers (Volume et CA, Productivité, Parts...).
 
 ### Choix de modélisation à savoir expliquer
 
@@ -150,7 +149,7 @@ en haut, le détail en dessous, et un encadré **« À retenir »** qui donne la
 | 2. Quand ? | À quelles heures renforcer la flotte ? | Matrice `Jour` × `Heure` avec Courses par jour (hors fériés) et fond en dégradé. Histogramme : Courses par Heure. Courbe : Revenu par minute par Heure. Barres : Revenu par minute par Créneau |
 | 3. Où ? | Où positionner les véhicules ? | Barres : CA top 10 zones par Zone. Nuage de points : Zone, légende Borough, X = Courses, Y = Revenu par minute, taille = CA. Table : Zone, Borough, Courses, CA, Part du CA, Panier moyen, Revenu par minute. Carte proportionnelle : CA par Borough |
 | 4. Rentabilité | Quelles courses privilégier ? | Histogrammes : Revenu par minute par Type de course et par Tranche de distance. Barres : Taux de pourboire par Type de course. Anneau : Courses par Mode de paiement |
-| 5. Qualité des données | Peut-on faire confiance aux chiffres ? | 4 cartes : Courses brutes, écartées, analysées, Taux exploitable. Barres : Rejets et anomalies par Motif (légende Catégorie). Table : Étape, Motif, Nb courses, Part du brut |
+| 5. Qualité des données | Peut-on faire confiance aux chiffres ? | 4 cartes : Courses brutes, écartées, analysées, Taux exploitable. Barres : Rejets et anomalies par Motif (légende Catégorie). Table : Étape, Motif, Courses (étape), Part des courses brutes |
 
 **Comment lire le nuage de points (page 3)** : en haut à droite, les zones à fort volume **et** forte
 productivité (priorités de positionnement) ; en bas à droite, du volume peu rentable (centre de Manhattan
@@ -160,10 +159,10 @@ aux heures de bureau) ; en haut à gauche, des zones rares mais rentables (aéro
 
 ## 5. Personnaliser (recommandé pour t'approprier le rapport)
 
-Le projet généré est une base solide. Quelques retouches dans Power BI Desktop le rendront plus personnel :
-- ajuster tailles de police, couleurs des barres et unités d'affichage des cartes (*Format du visuel*) ;
+Chaque page dispose déjà d'un **navigateur de pages** (en haut à droite). Quelques retouches dans
+Power BI Desktop rendront le rapport plus personnel :
+- ajuster tailles de police et couleurs des barres (*Format du visuel*) ;
 - ajouter la **ligne moyenne** sur la courbe « Revenu par minute selon l'heure » (volet *Analytique*, icône loupe) ;
-- ajouter un **navigateur de pages** (*Insérer* > *Boutons* > *Navigateur* > *Navigateur de pages*) ;
 - synchroniser les segments de la page 1 sur les autres pages (*Affichage* > **Synchroniser les segments**).
 
 > **Attention** : relancer `python powerbi/generer_pbip.py` régénère le projet et **écrase** les
@@ -174,16 +173,18 @@ Le projet généré est une base solide. Quelques retouches dans Power BI Deskto
 
 ## 6. Produire les livrables finaux
 
+Les livrables sont déjà dans le dépôt (`powerbi/NYC_Taxi_Dashboard.pbix`, `powerbi/NYC_Taxi_Dashboard.pdf`,
+`docs/images/dashboard_*.png`). Après une retouche du rapport, régénère-les ainsi :
+
 1. **Fichier `.pbix`** (un seul fichier, pratique pour un recruteur) : *Fichier* > **Enregistrer sous** >
    type *Fichiers Power BI (.pbix)* > `powerbi/NYC_Taxi_Dashboard.pbix`.
    Le `.pbix` embarque les données : il s'ouvre sans configurer de chemin.
 2. **Export PDF** : *Fichier* > **Exporter** > **Exporter au format PDF** > `powerbi/NYC_Taxi_Dashboard.pdf`.
-3. **Captures d'écran** de chaque page (Windows : `Win + Maj + S`, zone du canevas uniquement), enregistrées
-   dans `docs/images/` avec ces noms exacts :
+3. **Captures d'écran** de chaque page : `Win + Maj + S` sur le canevas, ou conversion des pages du PDF
+   en images (PyMuPDF, 150 dpi). Enregistrées dans `docs/images/` avec ces noms exacts :
    `dashboard_1_vue_ensemble.png`, `dashboard_2_quand.png`, `dashboard_3_ou.png`,
    `dashboard_4_rentabilite.png`, `dashboard_5_qualite.png`.
-4. Dans le `README.md` (section 8), supprime les lignes `<!--` et `-->` autour des images.
-5. Dans IntelliJ IDEA : *Git* > **Commit** (coche les nouveaux fichiers), message par exemple
+4. Dans IntelliJ IDEA : *Git* > **Commit** (coche les nouveaux fichiers), message par exemple
    `Ajout du dashboard finalisé, export PDF et captures`, puis **Commit and Push** vers `dev`.
 
 Le fichier `.gitignore` exclut déjà le cache local de Power BI (`.pbi/cache.abf`, `localSettings.json`),

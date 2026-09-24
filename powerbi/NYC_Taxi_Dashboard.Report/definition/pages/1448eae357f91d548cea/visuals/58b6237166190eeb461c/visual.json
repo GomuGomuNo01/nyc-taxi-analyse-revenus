@@ -6,7 +6,7 @@
     "y": 8,
     "z": 0,
     "height": 52,
-    "width": 1240,
+    "width": 700,
     "tabOrder": 0
   },
   "visual": {
@@ -21,7 +21,7 @@
                   {
                     "value": "Quand ? Demande et productivité selon l'heure",
                     "textStyle": {
-                      "fontSize": "18pt",
+                      "fontSize": "16pt",
                       "fontWeight": "bold",
                       "color": "#0B0B0B"
                     }
@@ -66,6 +66,40 @@
               "expr": {
                 "Literal": {
                   "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "0.0D"
                 }
               }
             }

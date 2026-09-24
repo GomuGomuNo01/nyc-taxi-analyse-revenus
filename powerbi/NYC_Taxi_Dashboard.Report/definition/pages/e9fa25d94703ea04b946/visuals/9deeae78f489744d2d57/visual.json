@@ -2,45 +2,120 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "9deeae78f489744d2d57",
   "position": {
-    "x": 20,
-    "y": 590,
+    "x": 792,
+    "y": 258,
     "z": 13000,
-    "height": 118,
-    "width": 1240,
+    "height": 320,
+    "width": 468,
     "tabOrder": 13000
   },
   "visual": {
-    "visualType": "textbox",
+    "visualType": "clusteredBarChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "fact_trips_agg"
+                    }
+                  },
+                  "Property": "Type de course"
+                }
+              },
+              "queryRef": "fact_trips_agg.Type de course",
+              "nativeQueryRef": "Type de course",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Part des courses"
+                }
+              },
+              "queryRef": "_Mesures.Part des courses",
+              "nativeQueryRef": "Part des courses"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Part du CA"
+                }
+              },
+              "queryRef": "_Mesures.Part du CA",
+              "nativeQueryRef": "Part du CA"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Mesures"
+                  }
+                },
+                "Property": "Part du CA"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
     "objects": {
-      "general": [
+      "labels": [
         {
           "properties": {
-            "paragraphs": [
-              {
-                "textRuns": [
-                  {
-                    "value": "À retenir",
-                    "textStyle": {
-                      "fontSize": "11pt",
-                      "fontWeight": "bold",
-                      "color": "#104281"
-                    }
-                  }
-                ]
-              },
-              {
-                "textRuns": [
-                  {
-                    "value": "Les aéroports représentent 6 % des courses mais 21 % du chiffre d'affaires. Les courses dans Manhattan font 85 % du volume mais seulement 65 % du CA.",
-                    "textStyle": {
-                      "fontSize": "11pt",
-                      "fontWeight": "normal",
-                      "color": "#0B0B0B"
-                    }
-                  }
-                ]
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
               }
-            ]
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Poids de chaque type de course : volume et CA'"
+                }
+              }
+            }
           }
         }
       ]

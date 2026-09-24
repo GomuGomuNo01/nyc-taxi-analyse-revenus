@@ -2,15 +2,15 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "c6c6cabd0d505c982859",
   "position": {
-    "x": 20,
-    "y": 378,
+    "x": 650,
+    "y": 66,
     "z": 3000,
-    "height": 212,
+    "height": 300,
     "width": 610,
     "tabOrder": 3000
   },
   "visual": {
-    "visualType": "clusteredBarChart",
+    "visualType": "clusteredColumnChart",
     "query": {
       "queryState": {
         "Category": {
@@ -23,11 +23,11 @@
                       "Entity": "fact_trips_agg"
                     }
                   },
-                  "Property": "Type de course"
+                  "Property": "Tranche de distance"
                 }
               },
-              "queryRef": "fact_trips_agg.Type de course",
-              "nativeQueryRef": "Type de course",
+              "queryRef": "fact_trips_agg.Tranche de distance",
+              "nativeQueryRef": "Tranche de distance",
               "active": true
             }
           ]
@@ -42,11 +42,11 @@
                       "Entity": "_Mesures"
                     }
                   },
-                  "Property": "Taux de pourboire (carte)"
+                  "Property": "Revenu par minute"
                 }
               },
-              "queryRef": "_Mesures.Taux de pourboire (carte)",
-              "nativeQueryRef": "Taux de pourboire (carte"
+              "queryRef": "_Mesures.Revenu par minute",
+              "nativeQueryRef": "Revenu par minute"
             }
           ]
         }
@@ -55,16 +55,16 @@
         "sort": [
           {
             "field": {
-              "Measure": {
+              "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "_Mesures"
+                    "Entity": "fact_trips_agg"
                   }
                 },
-                "Property": "Taux de pourboire (carte)"
+                "Property": "Tranche de distance"
               }
             },
-            "direction": "Descending"
+            "direction": "Ascending"
           }
         ]
       }
@@ -98,7 +98,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Taux de pourboire (paiements carte) par type de course'"
+                  "Value": "'Revenu par minute par tranche de distance (courbe en U)'"
                 }
               }
             }

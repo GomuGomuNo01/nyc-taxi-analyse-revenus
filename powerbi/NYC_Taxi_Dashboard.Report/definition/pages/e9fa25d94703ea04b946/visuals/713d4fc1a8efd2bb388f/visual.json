@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "713d4fc1a8efd2bb388f",
   "position": {
-    "x": 644,
+    "x": 436,
     "y": 150,
     "z": 8000,
     "height": 96,
@@ -23,15 +23,30 @@
                       "Entity": "_Mesures"
                     }
                   },
-                  "Property": "Revenu par minute"
+                  "Property": "Panier moyen"
                 }
               },
-              "queryRef": "_Mesures.Revenu par minute",
-              "nativeQueryRef": "Revenu par minute"
+              "queryRef": "_Mesures.Panier moyen",
+              "nativeQueryRef": "Panier moyen"
             }
           ]
         }
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1.0D"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   }

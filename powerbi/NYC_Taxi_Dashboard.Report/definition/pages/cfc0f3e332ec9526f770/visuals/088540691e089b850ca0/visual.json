@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "088540691e089b850ca0",
   "position": {
-    "x": 650,
+    "x": 20,
     "y": 66,
     "z": 2000,
     "height": 300,
@@ -23,11 +23,11 @@
                       "Entity": "fact_trips_agg"
                     }
                   },
-                  "Property": "Tranche de distance"
+                  "Property": "Type de course"
                 }
               },
-              "queryRef": "fact_trips_agg.Tranche de distance",
-              "nativeQueryRef": "Tranche de distance",
+              "queryRef": "fact_trips_agg.Type de course",
+              "nativeQueryRef": "Type de course",
               "active": true
             }
           ]
@@ -55,16 +55,16 @@
         "sort": [
           {
             "field": {
-              "Column": {
+              "Measure": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "fact_trips_agg"
+                    "Entity": "_Mesures"
                   }
                 },
-                "Property": "Tranche de distance"
+                "Property": "Revenu par minute"
               }
             },
-            "direction": "Ascending"
+            "direction": "Descending"
           }
         ]
       }
@@ -98,7 +98,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Revenu par minute par tranche de distance (courbe en U)'"
+                  "Value": "'Revenu par minute par type de course'"
                 }
               }
             }

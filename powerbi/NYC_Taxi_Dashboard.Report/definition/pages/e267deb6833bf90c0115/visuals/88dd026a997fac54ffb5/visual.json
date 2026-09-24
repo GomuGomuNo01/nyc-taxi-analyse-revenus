@@ -2,104 +2,36 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "88dd026a997fac54ffb5",
   "position": {
-    "x": 20,
-    "y": 66,
+    "x": 730,
+    "y": 14,
     "z": 1000,
-    "height": 320,
-    "width": 560,
+    "height": 40,
+    "width": 530,
     "tabOrder": 1000
   },
   "visual": {
-    "visualType": "clusteredBarChart",
-    "query": {
-      "queryState": {
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dim_zone"
-                    }
-                  },
-                  "Property": "Zone"
-                }
-              },
-              "queryRef": "dim_zone.Zone",
-              "nativeQueryRef": "Zone",
-              "active": true
-            }
-          ]
-        },
-        "Y": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Mesures"
-                    }
-                  },
-                  "Property": "CA top 10 zones"
-                }
-              },
-              "queryRef": "_Mesures.CA top 10 zones",
-              "nativeQueryRef": "CA top 10 zones",
-              "displayName": "Chiffre d'affaires"
-            }
-          ]
-        }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Measure": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "_Mesures"
-                  }
-                },
-                "Property": "CA top 10 zones"
-              }
-            },
-            "direction": "Descending"
-          }
-        ]
-      }
-    },
-    "objects": {
-      "labels": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
+    "visualType": "pageNavigator",
     "visualContainerObjects": {
-      "title": [
+      "background": [
         {
           "properties": {
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "false"
                 }
               }
-            },
-            "text": {
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
               "expr": {
                 "Literal": {
-                  "Value": "'Top 10 des zones par chiffre d''affaires'"
+                  "Value": "false"
                 }
               }
             }

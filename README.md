@@ -184,7 +184,7 @@ Analyse détaillée question par question : [docs/04_synthese_resultats.md](docs
 
 ## 8. Dashboard Power BI
 
-Rapport de 5 pages destiné à la direction des opérations : modèle en étoile, 24 mesures DAX,
+Rapport de 5 pages destiné à la direction des opérations : modèle en étoile, 26 mesures DAX,
 une question métier par page et un encadré « À retenir » qui donne la conclusion.
 
 | Page | Question à laquelle elle répond |
@@ -195,18 +195,17 @@ une question métier par page et un encadré « À retenir » qui donne la concl
 | 4. Rentabilité | Quelles courses sont les plus rentables ? (type, distance, pourboires) |
 | 5. Qualité des données | Peut-on faire confiance aux chiffres ? (motifs de rejet, traçabilité) |
 
-<!--
 ![Vue d'ensemble](docs/images/dashboard_1_vue_ensemble.png)
 ![Quand ?](docs/images/dashboard_2_quand.png)
 ![Où ?](docs/images/dashboard_3_ou.png)
 ![Rentabilité](docs/images/dashboard_4_rentabilite.png)
 ![Qualité des données](docs/images/dashboard_5_qualite.png)
--->
 
 **Approche « BI as code »** : le rapport est livré au format **Power BI Project (`.pbip`)**, c'est-à-dire
 sous forme de fichiers texte versionnés dans Git et générés par [`powerbi/generer_pbip.py`](powerbi/generer_pbip.py).
 Avant livraison, le modèle a été validé avec la bibliothèque officielle de Microsoft (Tabular Object Model),
-et les 53 fichiers du rapport avec les schémas JSON officiels.
+et les 57 fichiers du rapport avec les schémas JSON officiels. Le rendu a ensuite été contrôlé dans
+Power BI Desktop : les KPI affichés sont identiques aux résultats SQL.
 
 Fichiers : [`powerbi/`](powerbi/) (projet `.pbip`, rapport `.pbix`, export PDF, mesures DAX, thème).
 Ouvrir et comprendre le dashboard : [docs/03_guide_powerbi.md](docs/03_guide_powerbi.md).

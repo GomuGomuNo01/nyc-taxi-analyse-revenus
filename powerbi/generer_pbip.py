@@ -23,7 +23,10 @@ NAME = "NYC_Taxi_Dashboard"
 MODEL_DIR = os.path.join(HERE, f"{NAME}.SemanticModel")
 REPORT_DIR = os.path.join(HERE, f"{NAME}.Report")
 SCHEMAS = "https://developer.microsoft.com/json-schemas/fabric"
-DEFAULT_DATA_PATH = "C:\\A_REMPLACER\\nyc-taxi-data-engineering\\powerbi\\data\\"
+# Chemin absolu du dossier des Parquet (Power Query n'accepte pas de chemin relatif).
+# Calculé à partir de l'emplacement du script : le projet s'ouvre sans rien configurer
+# sur le poste où il a été généré. Surchargeable par la variable d'environnement NYC_TAXI_DATA.
+DEFAULT_DATA_PATH = os.environ.get("NYC_TAXI_DATA", os.path.join(HERE, "data")).rstrip("\\/") + "\\"
 
 # =====================================================================
 # 1. MODÈLE SÉMANTIQUE
@@ -163,6 +166,10 @@ MEASURES = [
      "Rejets et anomalies"),
     ("5. Qualité", "Taux de données exploitables", "DIVIDE ( [Courses analysées], [Courses brutes] )", FMT_PCT2,
      "Part des courses brutes retenues pour l'analyse"),
+    ("5. Qualité", "Courses (étape)", "SUM ( data_quality[Nb courses] )", FMT_INT,
+     "Nombre de courses d'une étape ou d'un motif du pipeline"),
+    ("5. Qualité", "Part des courses brutes", "SUM ( data_quality[Part du brut] )", FMT_PCT2,
+     "Poids d'une étape ou d'un motif dans les courses brutes"),
     ("5. Qualité", "Rejets et anomalies",
      "CALCULATE ( SUM ( data_quality[Nb courses] ), data_quality[Catégorie] IN { \"Rejet\", \"Anomalie\" } )",
      FMT_INT, "Courses écartées, par motif"),
@@ -314,10 +321,12 @@ def build_model():
 # 2. RAPPORT : helpers de requêtes et de mise en forme
 # =====================================================================
 def lit(value) -> dict:
-    """Littéral Power BI : texte entre apostrophes, booléen, nombre décimal (D)."""
+    """Littéral Power BI : texte entre apostrophes, booléen, entier (L), nombre décimal (D)."""
     if isinstance(value, bool):
         v = "true" if value else "false"
-    elif isinstance(value, (int, float)):
+    elif isinstance(value, int):
+        v = f"{value}L"
+    elif isinstance(value, float):
         v = f"{value}D"
     else:
         v = "'" + str(value).replace("'", "''") + "'"
@@ -334,19 +343,12 @@ def measure(name: str) -> dict:
     return {"Measure": {"Expression": {"SourceRef": {"Entity": MEASURE_TABLE}}, "Property": name}}
 
 
-def total(table: str, name: str) -> dict:
-    return {"Aggregation": {"Expression": col(table, name), "Function": 0}}
-
-
 def proj(field: dict, display: str = None) -> dict:
     if "Measure" in field:
         ref = f"{MEASURE_TABLE}.{field['Measure']['Property']}"
-    elif "Aggregation" in field:
-        c = field["Aggregation"]["Expression"]["Column"]
-        ref = f"Sum({c['Expression']['SourceRef']['Entity']}.{c['Property']})"
     else:
         ref = f"{field['Column']['Expression']['SourceRef']['Entity']}.{field['Column']['Property']}"
-    p = {"field": field, "queryRef": ref, "nativeQueryRef": ref.split(".", 1)[-1].rstrip(")")}
+    p = {"field": field, "queryRef": ref, "nativeQueryRef": ref.split(".", 1)[-1]}
     if "Column" in field:
         p["active"] = True
     if display:
@@ -385,6 +387,10 @@ class Page:
 
 
 def chart(visual_type: str, roles: dict, sort=None, objects=None) -> dict:
+    if visual_type == "tableEx":
+        # "active" sert aux niveaux d'un axe : dans un tableau, Power BI n'afficherait que ces colonnes
+        roles = {role: [{k: v for k, v in p.items() if k != "active"} for p in projs]
+                 for role, projs in roles.items()}
     v = {"visualType": visual_type,
          "query": {"queryState": {role: {"projections": projs} for role, projs in roles.items()}}}
     if sort:
@@ -399,8 +405,13 @@ def data_labels() -> dict:
     return {"labels": [{"properties": {"show": lit(True)}}]}
 
 
-def card(measure_name: str) -> dict:
-    return chart("card", {"Values": [proj(measure(measure_name))]})
+def card(measure_name: str, units: float = 1.0, decimals: int = None) -> dict:
+    """units : 1 = valeur entière affichée, 1e6 = en millions. decimals : None = selon le format."""
+    props = {"labelDisplayUnits": lit(units)}
+    if decimals is not None:
+        props["labelPrecision"] = lit(decimals)
+    return chart("card", {"Values": [proj(measure(measure_name))]},
+                 objects={"labels": [{"properties": props}]})
 
 
 def slicer(table: str, column: str, mode: str) -> dict:
@@ -418,21 +429,33 @@ def textbox(paragraphs) -> dict:
 
 NO_BACKGROUND = {"background": [{"properties": {"show": lit(False)}}],
                  "border": [{"properties": {"show": lit(False)}}]}
+NO_PADDING = {"padding": [{"properties": {side: lit(0.0) for side in ("top", "bottom", "left", "right")}}]}
 INK, MUTED = "#0B0B0B", "#52514E"
 
 
 def header(page: Page, title: str, subtitle: str):
-    page.add(20, 8, 1240, 52, textbox([(title, 18, True, INK), (subtitle, 10, False, MUTED)]),
-             container_extra=NO_BACKGROUND)
+    page.add(20, 8, 700, 52, textbox([(title, 16, True, INK), (subtitle, 10, False, MUTED)]),
+             container_extra={**NO_BACKGROUND, **NO_PADDING})
+    page.add(730, 14, 530, 40, {"visualType": "pageNavigator"}, container_extra=NO_BACKGROUND)
 
 
 def takeaway(page: Page, y: int, h: int, text: str):
     page.add(20, y, 1240, h, textbox([("À retenir", 11, True, "#104281"), (text, 11, False, INK)]))
 
 
+def small_font(size: float = 7.0) -> dict:
+    return {part: [{"properties": {"fontSize": lit(size)}}] for part in ("values", "columnHeaders", "rowHeaders")}
+
+
+def hour_axis() -> dict:
+    """Axe continu 0-23 h : les 24 heures tiennent dans le visuel, sans barre de défilement."""
+    return {"categoryAxis": [{"properties": {"axisType": lit("Scalar"), "showAxisTitle": lit(False)}}]}
+
+
 def heatmap_objects(measure_name: str) -> dict:
     measure(measure_name)  # vérifie que la mesure existe
     return {
+        **small_font(),
         "subTotals": [{"properties": {"rowSubtotals": lit(False), "columnSubtotals": lit(False)}}],
         "values": [{
             "properties": {"backColor": {"solid": {"color": {"expr": {"FillRule": {
@@ -466,7 +489,8 @@ def build_pages():
     kpis = ["Courses", "Chiffre d'affaires", "Panier moyen", "Revenu par minute",
             "Part du CA aéroports", "Taux de pourboire (carte)"]
     for i, k in enumerate(kpis):
-        p.add(20 + i * 208, 150, 196, 96, card(k))
+        p.add(20 + i * 208, 150, 196, 96,
+              card(k, 1e6, 1) if k == "Chiffre d'affaires" else card(k))
     p.add(20, 258, 760, 320, chart("lineChart", {
         "Category": [proj(col("dim_date", "Date"))],
         "Y": [proj(measure("Chiffre d'affaires"))]}),
@@ -491,13 +515,14 @@ def build_pages():
         objects=heatmap_objects("Courses par jour (hors fériés)")),
         title="Nombre moyen de courses par heure et jour de semaine (hors jours fériés)")
     p.add(20, 348, 406, 238, chart("clusteredColumnChart", {
-        "Category": [proj(col("dim_hour", "Heure"))],
+        "Category": [proj(col("dim_hour", "N° heure"), "Heure")],
         "Y": [proj(measure("Courses"))]},
-        sort=(col("dim_hour", "Heure"), "Ascending")), title="Courses par heure")
+        sort=(col("dim_hour", "N° heure"), "Ascending"), objects=hour_axis()), title="Courses par heure")
     p.add(437, 348, 406, 238, chart("lineChart", {
-        "Category": [proj(col("dim_hour", "Heure"))],
+        "Category": [proj(col("dim_hour", "N° heure"), "Heure")],
         "Y": [proj(measure("Revenu par minute"))]},
-        sort=(col("dim_hour", "Heure"), "Ascending")), title="Revenu par minute selon l'heure")
+        sort=(col("dim_hour", "N° heure"), "Ascending"), objects=hour_axis()),
+        title="Revenu par minute selon l'heure")
     p.add(854, 348, 406, 238, chart("clusteredBarChart", {
         "Category": [proj(col("dim_hour", "Créneau"))],
         "Y": [proj(measure("Revenu par minute"))]},
@@ -579,9 +604,10 @@ def build_pages():
         title="Courses écartées par motif (rejet au nettoyage ou anomalie signalée)")
     p.add(732, 174, 528, 416, chart("tableEx", {
         "Values": [proj(col("data_quality", "Étape")), proj(col("data_quality", "Motif")),
-                   proj(total("data_quality", "Nb courses"), "Courses"),
-                   proj(total("data_quality", "Part du brut"), "Part du brut")]},
-        sort=(col("data_quality", "Étape"), "Ascending")), title="Détail par étape du pipeline")
+                   proj(measure("Courses (étape)"), "Courses"),
+                   proj(measure("Part des courses brutes"), "Part du brut")]},
+        sort=(col("data_quality", "Étape"), "Ascending"),
+        objects={"total": [{"properties": {"totals": lit(False)}}]}), title="Détail par étape du pipeline")
     takeaway(p, 602, 106, "97,04 % des courses brutes sont exploitables. 99,9 % des rejets « Aucun passager » "
              "viennent d'un seul fournisseur de taximètre : un défaut de saisie systémique, à lui signaler.")
     pages.append(p)

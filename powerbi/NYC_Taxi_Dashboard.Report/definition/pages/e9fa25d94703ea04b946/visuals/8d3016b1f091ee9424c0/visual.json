@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "8d3016b1f091ee9424c0",
   "position": {
-    "x": 228,
+    "x": 20,
     "y": 150,
     "z": 6000,
     "height": 96,
@@ -23,15 +23,30 @@
                       "Entity": "_Mesures"
                     }
                   },
-                  "Property": "Chiffre d'affaires"
+                  "Property": "Courses"
                 }
               },
-              "queryRef": "_Mesures.Chiffre d'affaires",
-              "nativeQueryRef": "Chiffre d'affaires"
+              "queryRef": "_Mesures.Courses",
+              "nativeQueryRef": "Courses"
             }
           ]
         }
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1.0D"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   }

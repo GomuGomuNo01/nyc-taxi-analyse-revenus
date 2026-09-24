@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "25fb4e1630f108795701",
   "position": {
-    "x": 714,
+    "x": 432,
     "y": 66,
     "z": 3000,
     "height": 72,
@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dim_payment"
+                      "Entity": "fact_trips_agg"
                     }
                   },
-                  "Property": "Mode de paiement"
+                  "Property": "Type de course"
                 }
               },
-              "queryRef": "dim_payment.Mode de paiement",
-              "nativeQueryRef": "Mode de paiement",
+              "queryRef": "fact_trips_agg.Type de course",
+              "nativeQueryRef": "Type de course",
               "active": true
             }
           ]
@@ -63,7 +63,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Mode de paiement'"
+                  "Value": "'Type de course'"
                 }
               }
             }

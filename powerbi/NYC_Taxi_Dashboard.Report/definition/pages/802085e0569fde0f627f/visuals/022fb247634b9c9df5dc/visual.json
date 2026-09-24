@@ -2,56 +2,18 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "022fb247634b9c9df5dc",
   "position": {
-    "x": 20,
-    "y": 174,
+    "x": 962,
+    "y": 66,
     "z": 5000,
-    "height": 416,
-    "width": 700,
+    "height": 96,
+    "width": 302,
     "tabOrder": 5000
   },
   "visual": {
-    "visualType": "clusteredBarChart",
+    "visualType": "card",
     "query": {
       "queryState": {
-        "Category": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "data_quality"
-                    }
-                  },
-                  "Property": "Motif"
-                }
-              },
-              "queryRef": "data_quality.Motif",
-              "nativeQueryRef": "Motif",
-              "active": true
-            }
-          ]
-        },
-        "Series": {
-          "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "data_quality"
-                    }
-                  },
-                  "Property": "Catégorie"
-                }
-              },
-              "queryRef": "data_quality.Catégorie",
-              "nativeQueryRef": "Catégorie",
-              "active": true
-            }
-          ]
-        },
-        "Y": {
+        "Values": {
           "projections": [
             {
               "field": {
@@ -61,64 +23,24 @@
                       "Entity": "_Mesures"
                     }
                   },
-                  "Property": "Rejets et anomalies"
+                  "Property": "Taux de données exploitables"
                 }
               },
-              "queryRef": "_Mesures.Rejets et anomalies",
-              "nativeQueryRef": "Rejets et anomalies",
-              "displayName": "Courses écartées"
+              "queryRef": "_Mesures.Taux de données exploitables",
+              "nativeQueryRef": "Taux de données exploitables"
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Measure": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "_Mesures"
-                  }
-                },
-                "Property": "Rejets et anomalies"
-              }
-            },
-            "direction": "Descending"
-          }
-        ]
       }
     },
     "objects": {
       "labels": [
         {
           "properties": {
-            "show": {
+            "labelDisplayUnits": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
-                }
-              }
-            }
-          }
-        }
-      ]
-    },
-    "visualContainerObjects": {
-      "title": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "true"
-                }
-              }
-            },
-            "text": {
-              "expr": {
-                "Literal": {
-                  "Value": "'Courses écartées par motif (rejet au nettoyage ou anomalie signalée)'"
+                  "Value": "1.0D"
                 }
               }
             }

@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "4a80a496c7eae8a53900",
   "position": {
-    "x": 650,
+    "x": 20,
     "y": 378,
     "z": 4000,
     "height": 212,
@@ -10,7 +10,7 @@
     "tabOrder": 4000
   },
   "visual": {
-    "visualType": "donutChart",
+    "visualType": "clusteredBarChart",
     "query": {
       "queryState": {
         "Category": {
@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dim_payment"
+                      "Entity": "fact_trips_agg"
                     }
                   },
-                  "Property": "Mode de paiement"
+                  "Property": "Type de course"
                 }
               },
-              "queryRef": "dim_payment.Mode de paiement",
-              "nativeQueryRef": "Mode de paiement",
+              "queryRef": "fact_trips_agg.Type de course",
+              "nativeQueryRef": "Type de course",
               "active": true
             }
           ]
@@ -42,15 +42,47 @@
                       "Entity": "_Mesures"
                     }
                   },
-                  "Property": "Courses"
+                  "Property": "Taux de pourboire (carte)"
                 }
               },
-              "queryRef": "_Mesures.Courses",
-              "nativeQueryRef": "Courses"
+              "queryRef": "_Mesures.Taux de pourboire (carte)",
+              "nativeQueryRef": "Taux de pourboire (carte)"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Mesures"
+                  }
+                },
+                "Property": "Taux de pourboire (carte)"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [
@@ -66,7 +98,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Répartition des courses par mode de paiement'"
+                  "Value": "'Taux de pourboire (paiements carte) par type de course'"
                 }
               }
             }

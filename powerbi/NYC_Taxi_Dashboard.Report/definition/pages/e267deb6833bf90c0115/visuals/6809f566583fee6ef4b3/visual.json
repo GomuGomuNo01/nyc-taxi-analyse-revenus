@@ -2,19 +2,33 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "6809f566583fee6ef4b3",
   "position": {
-    "x": 852,
+    "x": 20,
     "y": 398,
     "z": 4000,
     "height": 190,
-    "width": 408,
+    "width": 820,
     "tabOrder": 4000
   },
   "visual": {
-    "visualType": "treemap",
+    "visualType": "tableEx",
     "query": {
       "queryState": {
-        "Group": {
+        "Values": {
           "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_zone"
+                    }
+                  },
+                  "Property": "Zone"
+                }
+              },
+              "queryRef": "dim_zone.Zone",
+              "nativeQueryRef": "Zone"
+            },
             {
               "field": {
                 "Column": {
@@ -27,13 +41,22 @@
                 }
               },
               "queryRef": "dim_zone.Borough",
-              "nativeQueryRef": "Borough",
-              "active": true
-            }
-          ]
-        },
-        "Values": {
-          "projections": [
+              "nativeQueryRef": "Borough"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Courses"
+                }
+              },
+              "queryRef": "_Mesures.Courses",
+              "nativeQueryRef": "Courses"
+            },
             {
               "field": {
                 "Measure": {
@@ -47,9 +70,68 @@
               },
               "queryRef": "_Mesures.Chiffre d'affaires",
               "nativeQueryRef": "Chiffre d'affaires"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Part du CA"
+                }
+              },
+              "queryRef": "_Mesures.Part du CA",
+              "nativeQueryRef": "Part du CA"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Panier moyen"
+                }
+              },
+              "queryRef": "_Mesures.Panier moyen",
+              "nativeQueryRef": "Panier moyen"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Revenu par minute"
+                }
+              },
+              "queryRef": "_Mesures.Revenu par minute",
+              "nativeQueryRef": "Revenu par minute"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Mesures"
+                  }
+                },
+                "Property": "Chiffre d'affaires"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
       }
     },
     "visualContainerObjects": {
@@ -66,7 +148,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Chiffre d''affaires par borough'"
+                  "Value": "'Détail par zone'"
                 }
               }
             }

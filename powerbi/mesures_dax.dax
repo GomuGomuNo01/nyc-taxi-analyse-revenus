@@ -104,6 +104,14 @@ Courses écartées =
 Taux de données exploitables =
 DIVIDE ( [Courses analysées], [Courses brutes] )
 
+// Nombre de courses d'une étape ou d'un motif du pipeline  (format : #,0)
+Courses (étape) =
+SUM ( data_quality[Nb courses] )
+
+// Poids d'une étape ou d'un motif dans les courses brutes  (format : 0.00 %)
+Part des courses brutes =
+SUM ( data_quality[Part du brut] )
+
 // Courses écartées, par motif  (format : #,0)
 Rejets et anomalies =
 CALCULATE ( SUM ( data_quality[Nb courses] ), data_quality[Catégorie] IN { "Rejet", "Anomalie" } )

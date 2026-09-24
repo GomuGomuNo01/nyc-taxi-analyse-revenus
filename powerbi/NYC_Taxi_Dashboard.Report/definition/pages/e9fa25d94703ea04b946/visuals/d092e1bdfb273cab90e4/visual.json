@@ -1,0 +1,50 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "d092e1bdfb273cab90e4",
+  "position": {
+    "x": 20,
+    "y": 590,
+    "z": 14000,
+    "height": 118,
+    "width": 1240,
+    "tabOrder": 14000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "À retenir",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "fontWeight": "bold",
+                      "color": "#104281"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Les aéroports représentent 6 % des courses mais 21 % du chiffre d'affaires. Les courses dans Manhattan font 85 % du volume mais seulement 65 % du CA.",
+                    "textStyle": {
+                      "fontSize": "11pt",
+                      "fontWeight": "normal",
+                      "color": "#0B0B0B"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

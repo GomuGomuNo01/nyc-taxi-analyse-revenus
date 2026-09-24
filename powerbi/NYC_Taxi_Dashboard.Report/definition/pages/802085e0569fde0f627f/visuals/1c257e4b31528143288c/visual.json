@@ -2,34 +2,19 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "1c257e4b31528143288c",
   "position": {
-    "x": 732,
+    "x": 20,
     "y": 174,
     "z": 6000,
     "height": 416,
-    "width": 528,
+    "width": 700,
     "tabOrder": 6000
   },
   "visual": {
-    "visualType": "tableEx",
+    "visualType": "clusteredBarChart",
     "query": {
       "queryState": {
-        "Values": {
+        "Category": {
           "projections": [
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "data_quality"
-                    }
-                  },
-                  "Property": "Étape"
-                }
-              },
-              "queryRef": "data_quality.Étape",
-              "nativeQueryRef": "Étape",
-              "active": true
-            },
             {
               "field": {
                 "Column": {
@@ -44,46 +29,44 @@
               "queryRef": "data_quality.Motif",
               "nativeQueryRef": "Motif",
               "active": true
-            },
+            }
+          ]
+        },
+        "Series": {
+          "projections": [
             {
               "field": {
-                "Aggregation": {
+                "Column": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "data_quality"
-                        }
-                      },
-                      "Property": "Nb courses"
+                    "SourceRef": {
+                      "Entity": "data_quality"
                     }
                   },
-                  "Function": 0
+                  "Property": "Catégorie"
                 }
               },
-              "queryRef": "Sum(data_quality.Nb courses)",
-              "nativeQueryRef": "Nb courses",
-              "displayName": "Courses"
-            },
+              "queryRef": "data_quality.Catégorie",
+              "nativeQueryRef": "Catégorie",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
             {
               "field": {
-                "Aggregation": {
+                "Measure": {
                   "Expression": {
-                    "Column": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "data_quality"
-                        }
-                      },
-                      "Property": "Part du brut"
+                    "SourceRef": {
+                      "Entity": "_Mesures"
                     }
                   },
-                  "Function": 0
+                  "Property": "Rejets et anomalies"
                 }
               },
-              "queryRef": "Sum(data_quality.Part du brut)",
-              "nativeQueryRef": "Part du brut",
-              "displayName": "Part du brut"
+              "queryRef": "_Mesures.Rejets et anomalies",
+              "nativeQueryRef": "Rejets et anomalies",
+              "displayName": "Courses écartées"
             }
           ]
         }
@@ -92,19 +75,34 @@
         "sort": [
           {
             "field": {
-              "Column": {
+              "Measure": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "data_quality"
+                    "Entity": "_Mesures"
                   }
                 },
-                "Property": "Étape"
+                "Property": "Rejets et anomalies"
               }
             },
-            "direction": "Ascending"
+            "direction": "Descending"
           }
         ]
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [
@@ -120,7 +118,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Détail par étape du pipeline'"
+                  "Value": "'Courses écartées par motif (rejet au nettoyage ou anomalie signalée)'"
                 }
               }
             }

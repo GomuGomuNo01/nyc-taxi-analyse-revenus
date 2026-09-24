@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "b426b5140d56436eee59",
   "position": {
-    "x": 854,
+    "x": 437,
     "y": 348,
     "z": 4000,
     "height": 238,
@@ -10,7 +10,7 @@
     "tabOrder": 4000
   },
   "visual": {
-    "visualType": "clusteredBarChart",
+    "visualType": "lineChart",
     "query": {
       "queryState": {
         "Category": {
@@ -23,12 +23,13 @@
                       "Entity": "dim_hour"
                     }
                   },
-                  "Property": "Créneau"
+                  "Property": "N° heure"
                 }
               },
-              "queryRef": "dim_hour.Créneau",
-              "nativeQueryRef": "Créneau",
-              "active": true
+              "queryRef": "dim_hour.N° heure",
+              "nativeQueryRef": "N° heure",
+              "active": true,
+              "displayName": "Heure"
             }
           ]
         },
@@ -61,7 +62,7 @@
                     "Entity": "dim_hour"
                   }
                 },
-                "Property": "Créneau"
+                "Property": "N° heure"
               }
             },
             "direction": "Ascending"
@@ -70,13 +71,20 @@
       }
     },
     "objects": {
-      "labels": [
+      "categoryAxis": [
         {
           "properties": {
-            "show": {
+            "axisType": {
               "expr": {
                 "Literal": {
-                  "Value": "true"
+                  "Value": "'Scalar'"
+                }
+              }
+            },
+            "showAxisTitle": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }
@@ -98,7 +106,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Revenu par minute par créneau'"
+                  "Value": "'Revenu par minute selon l''heure'"
                 }
               }
             }

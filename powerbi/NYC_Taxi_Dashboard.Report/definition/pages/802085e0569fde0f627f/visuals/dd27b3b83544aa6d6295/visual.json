@@ -2,36 +2,42 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "dd27b3b83544aa6d6295",
   "position": {
-    "x": 20,
-    "y": 66,
+    "x": 730,
+    "y": 14,
     "z": 1000,
-    "height": 96,
-    "width": 302,
+    "height": 40,
+    "width": 530,
     "tabOrder": 1000
   },
   "visual": {
-    "visualType": "card",
-    "query": {
-      "queryState": {
-        "Values": {
-          "projections": [
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Mesures"
-                    }
-                  },
-                  "Property": "Courses brutes"
+    "visualType": "pageNavigator",
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
-              },
-              "queryRef": "_Mesures.Courses brutes",
-              "nativeQueryRef": "Courses brutes"
+              }
             }
-          ]
+          }
         }
-      }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   }

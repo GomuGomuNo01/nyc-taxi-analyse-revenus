@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "64451ac9f5bf44454345",
   "position": {
-    "x": 996,
+    "x": 714,
     "y": 66,
     "z": 4000,
     "height": 72,
-    "width": 264,
+    "width": 270,
     "tabOrder": 4000
   },
   "visual": {
@@ -20,14 +20,14 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "dim_date"
+                      "Entity": "dim_payment"
                     }
                   },
-                  "Property": "Jour"
+                  "Property": "Mode de paiement"
                 }
               },
-              "queryRef": "dim_date.Jour",
-              "nativeQueryRef": "Jour",
+              "queryRef": "dim_payment.Mode de paiement",
+              "nativeQueryRef": "Mode de paiement",
               "active": true
             }
           ]
@@ -63,7 +63,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Jour de la semaine'"
+                  "Value": "'Mode de paiement'"
                 }
               }
             }

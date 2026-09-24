@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
   "name": "d191897d8ae0b06d0ef7",
   "position": {
-    "x": 962,
+    "x": 648,
     "y": 66,
     "z": 4000,
     "height": 96,
@@ -23,15 +23,30 @@
                       "Entity": "_Mesures"
                     }
                   },
-                  "Property": "Taux de données exploitables"
+                  "Property": "Courses analysées"
                 }
               },
-              "queryRef": "_Mesures.Taux de données exploitables",
-              "nativeQueryRef": "Taux de données exploitables"
+              "queryRef": "_Mesures.Courses analysées",
+              "nativeQueryRef": "Courses analysées"
             }
           ]
         }
       }
+    },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "labelDisplayUnits": {
+              "expr": {
+                "Literal": {
+                  "Value": "1.0D"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "drillFilterOtherVisuals": true
   }

@@ -3,17 +3,36 @@
   "name": "ec70fa7c8b618ff0395a",
   "position": {
     "x": 20,
-    "y": 348,
+    "y": 66,
     "z": 2000,
-    "height": 238,
-    "width": 406,
+    "height": 270,
+    "width": 1240,
     "tabOrder": 2000
   },
   "visual": {
-    "visualType": "clusteredColumnChart",
+    "visualType": "pivotTable",
     "query": {
       "queryState": {
-        "Category": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_date"
+                    }
+                  },
+                  "Property": "Jour"
+                }
+              },
+              "queryRef": "dim_date.Jour",
+              "nativeQueryRef": "Jour",
+              "active": true
+            }
+          ]
+        },
+        "Columns": {
           "projections": [
             {
               "field": {
@@ -32,7 +51,7 @@
             }
           ]
         },
-        "Y": {
+        "Values": {
           "projections": [
             {
               "field": {
@@ -42,32 +61,119 @@
                       "Entity": "_Mesures"
                     }
                   },
-                  "Property": "Courses"
+                  "Property": "Courses par jour (hors fériés)"
                 }
               },
-              "queryRef": "_Mesures.Courses",
-              "nativeQueryRef": "Courses"
+              "queryRef": "_Mesures.Courses par jour (hors fériés)",
+              "nativeQueryRef": "Courses par jour (hors fériés)"
             }
           ]
         }
-      },
-      "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_hour"
+      }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "FillRule": {
+                      "Input": {
+                        "SelectRef": {
+                          "ExpressionName": "_Mesures.Courses par jour (hors fériés)"
+                        }
+                      },
+                      "FillRule": {
+                        "linearGradient2": {
+                          "min": {
+                            "color": {
+                              "Literal": {
+                                "Value": "'#F0F5FC'"
+                              }
+                            }
+                          },
+                          "max": {
+                            "color": {
+                              "Literal": {
+                                "Value": "'#1C5CAB'"
+                              }
+                            }
+                          },
+                          "nullColoringStrategy": {
+                            "strategy": {
+                              "Literal": {
+                                "Value": "'asZero'"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
                   }
-                },
-                "Property": "Heure"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ],
+            "metadata": "_Mesures.Courses par jour (hors fériés)"
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "7.0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "rowHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "7.0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTotals": [
+        {
+          "properties": {
+            "rowSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
               }
             },
-            "direction": "Ascending"
+            "columnSubtotals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
           }
-        ]
-      }
+        }
+      ]
     },
     "visualContainerObjects": {
       "title": [
@@ -83,7 +189,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Courses par heure'"
+                  "Value": "'Nombre moyen de courses par heure et jour de semaine (hors jours fériés)'"
                 }
               }
             }

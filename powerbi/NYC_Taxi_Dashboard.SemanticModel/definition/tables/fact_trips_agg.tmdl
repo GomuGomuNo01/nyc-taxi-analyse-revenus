@@ -1,0 +1,106 @@
+table fact_trips_agg
+
+	column date_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: date_id
+
+	column hour
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: hour
+
+	column pickup_location_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: pickup_location_id
+
+	column payment_type
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: payment_type
+
+	column 'Type de course'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: trip_category
+
+	column 'Tranche de distance'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: distance_band
+
+	column nb_trips
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: nb_trips
+
+	column nb_passengers
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: nb_passengers
+
+	column distance_miles
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: distance_miles
+
+	column duration_minutes
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: duration_minutes
+
+	column fare_amount
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: fare_amount
+
+	column tip_amount
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: tip_amount
+
+	column tolls_amount
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: tolls_amount
+
+	column surcharges_amount
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: surcharges_amount
+
+	column total_amount
+		dataType: double
+		isHidden
+		summarizeBy: none
+		sourceColumn: total_amount
+
+	partition fact_trips_agg = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DossierDonnees & "fact_trips_agg.parquet")),
+				    Typed = Table.TransformColumnTypes(Source, {{"date_id", Int64.Type}, {"hour", Int64.Type}, {"pickup_location_id", Int64.Type}, {"payment_type", Int64.Type}, {"trip_category", type text}, {"distance_band", type text}, {"nb_trips", Int64.Type}, {"nb_passengers", Int64.Type}, {"distance_miles", type number}, {"duration_minutes", type number}, {"fare_amount", type number}, {"tip_amount", type number}, {"tolls_amount", type number}, {"surcharges_amount", type number}, {"total_amount", type number}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table

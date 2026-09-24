@@ -1,0 +1,133 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "1c257e4b31528143288c",
+  "position": {
+    "x": 732,
+    "y": 174,
+    "z": 6000,
+    "height": 416,
+    "width": 528,
+    "tabOrder": 6000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "data_quality"
+                    }
+                  },
+                  "Property": "Étape"
+                }
+              },
+              "queryRef": "data_quality.Étape",
+              "nativeQueryRef": "Étape",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "data_quality"
+                    }
+                  },
+                  "Property": "Motif"
+                }
+              },
+              "queryRef": "data_quality.Motif",
+              "nativeQueryRef": "Motif",
+              "active": true
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "data_quality"
+                        }
+                      },
+                      "Property": "Nb courses"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(data_quality.Nb courses)",
+              "nativeQueryRef": "Nb courses",
+              "displayName": "Courses"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "data_quality"
+                        }
+                      },
+                      "Property": "Part du brut"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "Sum(data_quality.Part du brut)",
+              "nativeQueryRef": "Part du brut",
+              "displayName": "Part du brut"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "data_quality"
+                  }
+                },
+                "Property": "Étape"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Détail par étape du pipeline'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

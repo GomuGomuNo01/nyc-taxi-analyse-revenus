@@ -1,0 +1,81 @@
+table dim_date
+	dataCategory: Time
+
+	column date_id
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: date_id
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: dd/mm/yyyy
+		summarizeBy: none
+		sourceColumn: date
+
+	column 'Année'
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: year
+
+	column Mois
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: month
+
+	column 'Jour du mois'
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: day
+
+	column 'N° jour semaine'
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: day_of_week
+
+	column Jour
+		dataType: string
+		summarizeBy: none
+		sourceColumn: day_name
+		sortByColumn: 'N° jour semaine'
+
+	column 'Week-end'
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_weekend
+
+	column 'Jour férié'
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_holiday
+
+	column 'Nom du jour férié'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: holiday_name
+
+	column Semaine
+		dataType: int64
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: iso_week
+
+	partition dim_date = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DossierDonnees & "dim_date.parquet")),
+				    Typed = Table.TransformColumnTypes(Source, {{"date_id", Int64.Type}, {"date", type date}, {"year", Int64.Type}, {"month", Int64.Type}, {"day", Int64.Type}, {"day_of_week", Int64.Type}, {"day_name", type text}, {"is_weekend", type logical}, {"is_holiday", type logical}, {"holiday_name", type text}, {"iso_week", Int64.Type}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table

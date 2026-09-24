@@ -1,0 +1,46 @@
+table data_quality
+
+	column Ordre
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: step_order
+
+	column 'Étape'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: step
+
+	column 'Catégorie'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: category
+
+	column Motif
+		dataType: string
+		summarizeBy: none
+		sourceColumn: reason
+
+	column 'Nb courses'
+		dataType: int64
+		formatString: #,0
+		summarizeBy: none
+		sourceColumn: nb_trips
+
+	column 'Part du brut'
+		dataType: double
+		formatString: 0.00 %
+		summarizeBy: none
+		sourceColumn: pct_of_raw
+
+	partition data_quality = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DossierDonnees & "data_quality.parquet")),
+				    Typed = Table.TransformColumnTypes(Source, {{"step_order", Int64.Type}, {"step", type text}, {"category", type text}, {"reason", type text}, {"nb_trips", Int64.Type}, {"pct_of_raw", type number}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table

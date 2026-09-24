@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "e9d4d0c5b3c57734ea71",
+  "position": {
+    "x": 334,
+    "y": 66,
+    "z": 2000,
+    "height": 96,
+    "width": 302,
+    "tabOrder": 2000
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Courses écartées"
+                }
+              },
+              "queryRef": "_Mesures.Courses écartées",
+              "nativeQueryRef": "Courses écartées"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

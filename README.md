@@ -184,7 +184,8 @@ Analyse détaillée question par question : [docs/04_synthese_resultats.md](docs
 
 ## 8. Dashboard Power BI
 
-Rapport de 5 pages destiné à la direction des opérations, construit sur le modèle en étoile avec 21 mesures DAX.
+Rapport de 5 pages destiné à la direction des opérations : modèle en étoile, 24 mesures DAX,
+une question métier par page et un encadré « À retenir » qui donne la conclusion.
 
 | Page | Question à laquelle elle répond |
 |---|---|
@@ -192,7 +193,7 @@ Rapport de 5 pages destiné à la direction des opérations, construit sur le mo
 | 2. Quand ? | À quelles heures renforcer la flotte ? (carte de chaleur, revenu par minute par heure) |
 | 3. Où ? | Où positionner les véhicules ? (top zones, nuage de points volume / productivité) |
 | 4. Rentabilité | Quelles courses sont les plus rentables ? (type, distance, pourboires) |
-| 5. Qualité des données | Peut-on faire confiance aux chiffres ? (entonnoir, motifs de rejet) |
+| 5. Qualité des données | Peut-on faire confiance aux chiffres ? (motifs de rejet, traçabilité) |
 
 <!--
 ![Vue d'ensemble](docs/images/dashboard_1_vue_ensemble.png)
@@ -202,8 +203,13 @@ Rapport de 5 pages destiné à la direction des opérations, construit sur le mo
 ![Qualité des données](docs/images/dashboard_5_qualite.png)
 -->
 
-Fichiers : [`powerbi/`](powerbi/) (rapport `.pbix`, export PDF, mesures DAX, thème).
-Guide de construction pas à pas : [docs/03_guide_powerbi.md](docs/03_guide_powerbi.md).
+**Approche « BI as code »** : le rapport est livré au format **Power BI Project (`.pbip`)**, c'est-à-dire
+sous forme de fichiers texte versionnés dans Git et générés par [`powerbi/generer_pbip.py`](powerbi/generer_pbip.py).
+Avant livraison, le modèle a été validé avec la bibliothèque officielle de Microsoft (Tabular Object Model),
+et les 53 fichiers du rapport avec les schémas JSON officiels.
+
+Fichiers : [`powerbi/`](powerbi/) (projet `.pbip`, rapport `.pbix`, export PDF, mesures DAX, thème).
+Ouvrir et comprendre le dashboard : [docs/03_guide_powerbi.md](docs/03_guide_powerbi.md).
 
 ## 9. Enseignements
 
@@ -251,7 +257,8 @@ Guide de construction pas à pas : [docs/03_guide_powerbi.md](docs/03_guide_powe
 | Préparation des données | Nettoyage de données réelles volumineuses, règles de gestion, contrôle qualité, traçabilité |
 | Modélisation | Modèle en étoile, table de dates, pré-agrégation pour la BI |
 | Analyse | SQL avancé (fonctions de fenêtre, agrégats filtrés, CTE), analyse de Pareto, esprit critique sur les biais (effet de mix, données manquantes) |
-| Data visualisation | Dashboard Power BI orienté décision, mesures DAX, graphiques sobres et lisibles |
+| Data visualisation | Dashboard Power BI orienté décision, mesures DAX (`CALCULATE`, `ALLSELECTED`, `RANKX`), graphiques sobres et lisibles |
+| BI as code | Rapport Power BI versionné (format PBIP, TMDL, PBIR), généré par script et validé automatiquement |
 | Rigueur technique | Tests unitaires, code versionné, pipeline reproductible en une commande |
 | Communication | Documentation claire pour un public technique et non technique |
 
@@ -269,15 +276,15 @@ nyc-taxi-data-engineering/
 │   └── pipeline.py             # Exécution complète en une commande
 ├── sql/analyses_metier.sql     # 12 requêtes d'analyse
 ├── analysis/                   # Exécution SQL (DuckDB), graphiques, résultats CSV
-├── powerbi/                    # Données Parquet, mesures DAX, thème, rapport .pbix
+├── powerbi/                    # Projet Power BI (.pbip), générateur, données Parquet, mesures DAX, thème
 ├── docs/                       # Cadrage, dictionnaire, guide Power BI, synthèse, graphiques
 ├── tests/                      # 26 tests des règles métier
 └── requirements.txt
 ```
 
 **Option 1 : explorer le dashboard (aucune installation technique).**
-Les tables prêtes à l'emploi sont versionnées dans `powerbi/data/` : ouvrir `powerbi/nyc_taxi_dashboard.pbix`
-dans Power BI Desktop, ou reconstruire le rapport avec le [guide](docs/03_guide_powerbi.md).
+Les tables prêtes à l'emploi sont versionnées dans `powerbi/data/` : ouvrir `powerbi/NYC_Taxi_Dashboard.pbix`
+dans Power BI Desktop, ou le projet `powerbi/NYC_Taxi_Dashboard.pbip` en suivant le [guide](docs/03_guide_powerbi.md).
 
 **Option 2 : relancer tout le pipeline** (Linux, macOS ou WSL2 sous Windows ; Java 17 ou plus requis).
 
@@ -293,6 +300,7 @@ curl -L -o data/raw/taxi_zone_lookup.csv \
 
 python src/pipeline.py              # Bronze, Silver, Gold, qualité, export Power BI (~3 min)
 python analysis/make_charts.py      # Requêtes SQL, résultats CSV et graphiques
+python powerbi/generer_pbip.py      # Régénère le projet Power BI (écrase les retouches manuelles)
 pytest tests/ -v                    # Tests des règles métier
 ```
 

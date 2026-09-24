@@ -1,276 +1,190 @@
-# Guide Power BI Desktop : construire le dashboard
+# Guide Power BI Desktop : ouvrir, comprendre et finaliser le dashboard
 
-Ce guide te fait construire le dashboard de A à Z dans **Power BI Desktop** (interface en français).
-Chaque étape indique **quoi faire** et **pourquoi**, ce qui sert dans un vrai projet et en entretien.
+Le dashboard est livré sous forme de **projet Power BI (`.pbip`)**, généré par le script
+[`powerbi/generer_pbip.py`](../powerbi/generer_pbip.py). Ce guide explique comment l'ouvrir, ce que
+contient chaque partie et pourquoi, puis comment produire les livrables finaux (`.pbix`, PDF, captures).
 
-Durée estimée : 3 à 4 heures.
-Prérequis : le dépôt cloné en local (les fichiers de données sont déjà dans `powerbi/data/`, **aucun besoin de lancer Spark**).
+Durée estimée : 45 minutes.
 
-> Si ton Power BI est en anglais, les noms des menus sont indiqués entre crochets : *Accueil* [Home].
-
----
-
-## Étape 0 : Comprendre ce que l'on charge
-
-| Fichier | Rôle | Lignes |
-|---|---|---|
-| `fact_trips_agg.parquet` | **Table de faits** : sommes et comptages au grain jour × heure × zone de départ × paiement × type de course × tranche de distance | 638 473 |
-| `dim_date.parquet` | Calendrier de janvier 2019 (jour en français, week-end, jours fériés) | 31 |
-| `dim_hour.parquet` | Heures 0 à 23 et créneaux (nuit, pointe du matin...) | 24 |
-| `dim_zone.parquet` | Les 265 zones de taxi officielles (borough, zone, aéroport) | 265 |
-| `dim_payment.parquet` | Libellés des modes de paiement | 6 |
-| `data_quality.parquet` | Traçabilité : combien de courses écartées, à quelle étape et pourquoi | 12 |
-
-**Pourquoi un modèle en étoile ?** La table de faits contient les chiffres ; les dimensions contiennent
-les axes d'analyse (quand, où, comment). Power BI est optimisé pour ce modèle : les filtres
-se propagent des dimensions vers les faits, les calculs restent simples et rapides.
-
-**Pourquoi du Parquet et pas du CSV ?** Les types sont stockés dans le fichier (entier, décimal, date).
-Avec un CSV américain (`12.5`) ouvert dans un Power BI français (`12,5`), les décimales sont souvent
-mal interprétées. Le Parquet supprime ce risque.
+> Les noms des menus sont en français, avec l'équivalent anglais entre crochets : *Accueil* [Home].
 
 ---
 
-## Étape 1 : Charger les données avec un paramètre de chemin
+## 1. Qu'est-ce qu'un projet `.pbip` et pourquoi ce format ?
 
-**Pourquoi un paramètre ?** Le chemin du dossier est écrit une seule fois. Si tu déplaces le projet
-ou si un recruteur ouvre ton `.pbix`, il suffit de changer ce paramètre au lieu de modifier six requêtes.
-C'est une bonne pratique professionnelle.
+Un `.pbix` est un fichier binaire : impossible de voir dans Git ce qui a changé d'une version à l'autre.
+Un projet `.pbip` décrit le même rapport sous forme de **fichiers texte** :
 
-1. Ouvre Power BI Desktop > *Nouveau rapport*.
-2. *Accueil* > **Transformer les données** [Transform data]. L'éditeur Power Query s'ouvre.
-3. *Accueil* > **Gérer les paramètres** > **Nouveau paramètre** :
-   - Nom : `DossierDonnees`
-   - Type : `Texte`
-   - Valeur actuelle : le chemin complet de `powerbi\data\` **avec la barre oblique finale**,
-     par exemple `C:\Users\Cedric\IdeaProjects\nyc-taxi-data-engineering\powerbi\data\`
-4. *Accueil* > **Nouvelle source** > **Requête vide** [Blank query], puis *Accueil* > **Éditeur avancé**.
-   Remplace tout le contenu par :
+```
+powerbi/
+├── NYC_Taxi_Dashboard.pbip              # Le fichier à ouvrir (raccourci vers le projet)
+├── NYC_Taxi_Dashboard.SemanticModel/    # Le modèle de données (format TMDL)
+│   └── definition/
+│       ├── expressions.tmdl             # Paramètre DossierDonnees (chemin des fichiers)
+│       ├── relationships.tmdl           # Les 4 relations du modèle en étoile
+│       └── tables/*.tmdl                # Tables, colonnes, requêtes Power Query, mesures DAX
+├── NYC_Taxi_Dashboard.Report/           # Le rapport (format PBIR)
+│   └── definition/pages/<page>/visuals/<visuel>/visual.json
+├── data/*.parquet                       # Les données
+├── generer_pbip.py                      # Le script qui génère tout le projet
+├── mesures_dax.dax                      # Les 24 mesures, lisibles en un seul fichier
+└── theme_nyc_taxi.json                  # Le thème (couleurs, polices)
+```
 
-   ```powerquery
-   let
-       Source = Parquet.Document(File.Contents(DossierDonnees & "fact_trips_agg.parquet"))
-   in
-       Source
-   ```
-
-5. Clique sur *Terminé*, puis renomme la requête `fact_trips_agg` (clic droit sur la requête > *Renommer*).
-6. Recommence les étapes 4 et 5 pour `dim_date`, `dim_hour`, `dim_zone`, `dim_payment` et `data_quality`
-   (en changeant le nom du fichier dans la formule et le nom de la requête).
-7. Clic droit sur la requête `DossierDonnees` > décoche **Activer le chargement** (un paramètre n'est pas une table).
-8. Vérifie les types (icône à gauche de chaque en-tête de colonne) : `date` doit être de type *Date*,
-   les montants de type *Nombre décimal*, `nb_trips` de type *Nombre entier*.
-9. *Accueil* > **Fermer et appliquer** [Close & Apply].
-
-✅ Contrôle : dans la vue *Table* (icône grille à gauche), `fact_trips_agg` affiche 638 473 lignes (en bas à gauche).
+C'est la pratique « **BI as code** » : le rapport est versionné, relu et reproductible comme du code.
+Le projet a été validé avant livraison :
+- modèle chargé avec la bibliothèque officielle de Microsoft (Tabular Object Model) : 7 tables, 4 relations, 24 mesures, toutes les références DAX résolues ;
+- 53 fichiers du rapport validés contre les schémas JSON officiels de Microsoft ;
+- types de visuels et noms de rôles vérifiés sur 58 rapports d'exemple publiés par Microsoft.
 
 ---
 
-## Étape 2 : Construire le modèle (relations)
+## 2. Ouvrir le dashboard
 
-**Pourquoi ?** Sans relation, un segment « Jour de la semaine » ne filtrerait pas les courses.
-Les relations indiquent à Power BI comment les tables se répondent.
+### Prérequis
+- **Power BI Desktop à jour** (version de mai 2025 ou plus récente). Si la tienne est plus ancienne : Microsoft Store > Power BI Desktop > *Mettre à jour*.
+- Le dépôt à jour en local : dans IntelliJ IDEA, *Git* > **Pull** sur la branche `dev`.
 
-1. Va dans la vue **Modèle** (troisième icône à gauche).
-2. Crée les 4 relations en faisant glisser la colonne de la table de faits vers la colonne de la dimension :
+### Étapes
 
-   | De (plusieurs) | Vers (un) |
+1. Double-clique sur `powerbi/NYC_Taxi_Dashboard.pbip` (ou *Fichier* > *Ouvrir* dans Power BI Desktop).
+
+   > Si Power BI affiche un message indiquant que le format n'est pas pris en charge :
+   > *Fichier* > *Options et paramètres* > *Options* > **Fonctionnalités en préversion** [Preview features],
+   > coche **Enregistrement de projet Power BI (.pbip)**, **Stocker le modèle sémantique au format TMDL** et
+   > **Stocker les rapports au format PBIR** (selon ta version, certaines options n'existent plus car elles
+   > sont activées par défaut), puis redémarre Power BI Desktop.
+
+2. Les visuels sont vides ou en erreur : c'est normal, les données ne sont pas encore chargées.
+   Le projet ne contient que la **définition** du rapport, pas de copie des données.
+
+3. **Indiquer le dossier des données** : *Accueil* > **Transformer les données** (flèche du bas) >
+   **Modifier les paramètres** [Edit parameters]. Dans `DossierDonnees`, colle le chemin complet du
+   dossier `powerbi\data\` **avec la barre oblique inverse finale**, par exemple :
+   `C:\Users\Cedric\IdeaProjects\nyc-taxi-data-engineering\powerbi\data\`
+
+   Astuce : dans l'Explorateur Windows, ouvre le dossier `powerbi\data`, clique dans la barre d'adresse,
+   copie le chemin et ajoute `\` à la fin.
+
+4. Clique sur **OK**, puis sur **Appliquer les modifications** dans le bandeau jaune (ou *Accueil* > **Actualiser**).
+   Le chargement prend quelques secondes (640 000 lignes).
+
+5. **Recette** : sur la page *1. Vue d'ensemble*, sans filtre, vérifie les cartes :
+
+   | Mesure | Valeur attendue |
    |---|---|
-   | `fact_trips_agg[date_id]` | `dim_date[date_id]` |
-   | `fact_trips_agg[hour]` | `dim_hour[hour]` |
-   | `fact_trips_agg[pickup_location_id]` | `dim_zone[location_id]` |
-   | `fact_trips_agg[payment_type]` | `dim_payment[payment_type]` |
+   | Courses | 7 440 812 (affiché 7 M ou 7,44 M selon l'unité automatique) |
+   | Chiffre d'affaires | 114 788 696 $ (115 M) |
+   | Panier moyen | 15,43 $ |
+   | Revenu par minute | 1,19 $ |
+   | Part du CA aéroports | 21,2 % |
+   | Taux de pourboire (carte) | 20,2 % |
 
-3. Double-clique chaque relation et vérifie : Cardinalité **Plusieurs à un (\*:1)**,
-   Direction du filtrage croisé **Unique**.
-   *Pourquoi « Unique » ?* Le filtre va de la dimension vers les faits, jamais l'inverse :
-   c'est le comportement prévisible d'un modèle en étoile et il évite les ambiguïtés.
-4. `data_quality` reste **sans relation** : c'est une table de synthèse indépendante.
+   Page *5. Qualité des données* : 7 667 792 courses brutes, 7 440 812 analysées, 97,04 % exploitables.
+   Ces valeurs sont identiques aux résultats SQL de `analysis/results/`. **On ne présente jamais un chiffre
+   qu'on n'a pas recoupé avec une autre source.**
 
----
+6. *Fichier* > **Enregistrer** (Ctrl+S) : Power BI enregistre le projet `.pbip`.
 
-## Étape 3 : Préparer les dimensions pour le lecteur
+### En cas de problème
 
-**Pourquoi ?** Un rapport professionnel n'affiche jamais « day_of_week = 3 » ni les jours triés par
-ordre alphabétique (Dimanche, Jeudi, Lundi...).
-
-1. **Table de dates** : sélectionne `dim_date` > *Outils de table* > **Marquer comme table de dates** > colonne `date`.
-   Cela active les fonctions de temps de DAX et garantit un axe chronologique correct.
-2. **Tri des libellés** (vue *Table*, sélectionne la colonne puis *Outils de colonne* > **Trier par colonne**) :
-   - `dim_date[day_name]` trié par `dim_date[day_of_week]`
-   - `dim_hour[hour_label]` trié par `dim_hour[hour]`
-   Les créneaux (`time_slot`) et tranches de distance (`distance_band`) sont préfixés par un numéro
-   (« 1. », « 2. »...) : ils se trient naturellement dans le bon ordre.
-3. **Renommer pour le lecteur** (double-clic sur la colonne dans le volet *Données*) :
-   `day_name` > `Jour`, `hour_label` > `Heure`, `time_slot` > `Créneau`, `borough` > `Borough`,
-   `zone` > `Zone`, `payment_label` > `Mode de paiement`, `trip_category` > `Type de course`,
-   `distance_band` > `Tranche de distance`.
-4. **Masquer les clés techniques** (clic droit > *Masquer dans la vue rapport*) : dans `fact_trips_agg`,
-   masque `date_id`, `hour`, `pickup_location_id`, `payment_type` et **toutes les colonnes numériques**
-   (on les exploitera uniquement via des mesures). Le volet *Données* ne montre plus que ce qui a du sens.
-
----
-
-## Étape 4 : Appliquer le thème
-
-*Affichage* [View] > **Thèmes** > **Parcourir les thèmes** > sélectionne `powerbi/theme_nyc_taxi.json`.
-
-**Pourquoi ?** Une charte appliquée à tout le rapport en un clic : couleurs cohérentes et accessibles,
-fond gris clair et cartes blanches (lisibilité), mêmes polices partout.
-
----
-
-## Étape 5 : Créer les mesures DAX
-
-**Pourquoi des mesures et pas des colonnes ?** Une mesure est calculée **à la volée selon les filtres**
-(un jour, une zone, un segment...). Un ratio comme le panier moyen doit être recalculé pour chaque
-sélection : c'est le rôle d'une mesure.
-
-1. *Accueil* > **Entrer des données** [Enter data] > nomme la table `_Mesures` > *Charger*.
-   (Le tiret bas la place en haut de la liste : toutes les mesures sont rangées au même endroit.)
-2. Sélectionne `_Mesures` puis *Accueil* > **Nouvelle mesure**, colle la première mesure du fichier
-   `powerbi/mesures_dax.dax`, valide avec Entrée. Répète pour chaque mesure.
-3. Pour chaque mesure, règle le format dans *Outils de mesure* > *Format* comme indiqué en commentaire
-   dans le fichier (Devise $, Pourcentage, nombre de décimales).
-4. Supprime la colonne vide `Colonne1` de la table `_Mesures`.
-
-Les mesures essentielles à comprendre :
-
-| Mesure | Formule métier | Pourquoi elle compte |
+| Symptôme | Cause probable | Solution |
 |---|---|---|
-| Revenu par minute | CA / minutes de course | Productivité d'un chauffeur : KPI central du projet |
-| Panier moyen | CA / courses | Valeur moyenne d'une course |
-| Part du CA | CA du segment / CA de la sélection | Poids d'un segment (aéroports, zone...) |
-| Taux de pourboire (carte) | pourboires / tarif, sur carte uniquement | Les pourboires espèces ne sont pas enregistrés |
-| Taux de données exploitables | courses analysées / courses brutes | Crédibilité des chiffres présentés |
-
-✅ **Valeurs de contrôle** (place une *Carte* par mesure, sans filtre, et compare) :
-
-| Mesure | Valeur attendue |
-|---|---|
-| Courses | 7 440 812 |
-| Chiffre d'affaires | 114 788 696 $ |
-| Courses par jour | 240 026 |
-| Panier moyen | 15,43 $ |
-| Revenu par minute | 1,19 $ |
-| Durée moyenne (min) | 13,0 |
-| Distance moyenne (miles) | 2,83 |
-| Vitesse moyenne (mph) | 13,1 |
-| Part paiement carte | 72,0 % |
-| Taux de pourboire (carte) | 20,2 % |
-| Part du CA aéroports | 21,2 % |
-| Taux de données exploitables | 97,04 % |
-
-Si une valeur diffère, vérifie d'abord les relations (étape 2), puis la formule. Cette vérification
-s'appelle la **recette** : on ne présente jamais un chiffre qu'on n'a pas recoupé avec une autre source
-(ici, les requêtes SQL de `analysis/results/`).
+| « Impossible de trouver le fichier ... parquet » | Chemin du paramètre incorrect | Vérifie la barre oblique finale et l'orthographe du chemin (étape 3) |
+| Un visuel affiche une croix ou une erreur | Visuel non reconnu par ta version | Supprime-le et recrée-le à l'identique (voir section 4 : champs utilisés) |
+| Couleurs par défaut au lieu du thème | Thème non appliqué | *Affichage* > *Thèmes* > *Parcourir les thèmes* > `powerbi/theme_nyc_taxi.json` |
+| Les jours sont triés dans l'ordre alphabétique | Tri par colonne perdu | Vue *Table* > colonne `Jour` > *Outils de colonne* > *Trier par colonne* > `N° jour semaine` |
 
 ---
 
-## Étape 6 : Construire les pages du rapport
+## 3. Comprendre le modèle de données
 
-Principe de conception pour chaque page :
-- **une question métier par page**, écrite dans le titre ;
-- les **KPI en haut** (cartes), le **détail en dessous** (graphiques) ;
-- une **zone de texte « À retenir »** avec l'enseignement principal : le lecteur ne doit pas deviner la conclusion ;
-- 4 à 6 visuels maximum.
+Ouvre la vue **Modèle** (troisième icône à gauche).
 
-Format de page : *Format de la page* > *Paramètres du canevas* > 16:9 (1280 × 720).
+### Modèle en étoile
 
-### Page 1 : « Vue d'ensemble »
+- **Au centre, `fact_trips_agg`** (table de faits) : 638 473 lignes de sommes et de comptages
+  (nombre de courses, CA, minutes...) au grain jour × heure × zone × paiement × type de course × tranche de distance.
+- **Autour, les dimensions** : `dim_date` (calendrier), `dim_hour` (heures et créneaux),
+  `dim_zone` (265 zones), `dim_payment` (modes de paiement).
+- **Relations plusieurs-à-un, filtrage unidirectionnel** : un filtre sur une dimension (par exemple
+  « Samedi ») se propage vers les faits, jamais l'inverse. C'est le comportement le plus prévisible.
+- **`data_quality`** est indépendante (pas de relation) : c'est une table de synthèse de la qualité.
+- **`_Mesures`** regroupe les 24 mesures, rangées en dossiers (Volume et CA, Productivité, Parts...).
 
-*Question : comment se porte l'activité ce mois-ci ?*
+### Choix de modélisation à savoir expliquer
 
-| Visuel | Configuration |
+| Choix | Pourquoi |
 |---|---|
-| 6 cartes (visuel **Carte**) | Courses, Chiffre d'affaires, Panier moyen, Revenu par minute, Part du CA aéroports, Taux de pourboire (carte) |
-| **Graphique en courbes** | Axe X : `dim_date[date]` ; Axe Y : Chiffre d'affaires |
-| **Graphique à barres groupées** | Axe Y : Type de course ; Axe X : Part des courses **et** Part du CA |
-| 3 **Segments** [Slicer] | `dim_date[date]` (style *Entre*), Type de course, Mode de paiement |
-| Zone de texte « À retenir » | *Les aéroports représentent 6 % des courses mais 21 % du chiffre d'affaires.* |
+| Colonnes renommées en français (`Jour`, `Heure`, `Zone`...) | Le lecteur métier ne doit jamais voir `day_name` ou `pickup_location_id` |
+| Clés techniques et colonnes numériques masquées | On n'utilise que des mesures : pas de somme implicite fausse (option *discourage implicit measures* activée) |
+| `Jour` trié par `N° jour semaine`, `Heure` par `N° heure` | Lundi à dimanche et 0h à 23h, pas l'ordre alphabétique |
+| `dim_date` marquée comme **table de dates** | Axe chronologique correct et fonctions temporelles DAX disponibles |
+| Paramètre `DossierDonnees` | Le chemin est modifiable en un seul endroit |
+| Format Parquet | Types conservés, pas de problème de virgule ou de point décimal |
 
-Astuce : *Affichage* > **Synchroniser les segments** pour que les filtres suivent le lecteur de page en page.
+Pour voir la requête Power Query d'une table : *Transformer les données*, puis sélectionne la table.
 
-### Page 2 : « Quand ? Demande et productivité »
+### Les mesures DAX clés
 
-*Question : à quelles heures faut-il maximiser le nombre de véhicules en service ?*
+Toutes les mesures sont listées et commentées dans [`powerbi/mesures_dax.dax`](../powerbi/mesures_dax.dax).
 
-| Visuel | Configuration |
-|---|---|
-| **Matrice** (carte de chaleur) | Lignes : Jour ; Colonnes : Heure ; Valeurs : Courses par jour. Puis *Format du visuel* > *Éléments de cellule* > **Couleur d'arrière-plan** activée (dégradé blanc vers bleu foncé) |
-| **Histogramme groupé** | Axe X : Heure ; Axe Y : Courses |
-| **Graphique en courbes** | Axe X : Heure ; Axe Y : Revenu par minute. Dans le volet *Analytique* (loupe) : **Ligne moyenne** |
-| **Graphique à barres** | Axe Y : Créneau ; Axe X : Revenu par minute |
-| Zone de texte « À retenir » | *Pic de demande à 18h, mais le revenu par minute chute de 35 % entre 5h et 8h-9h à cause de la congestion.* |
-
-Ajoute un filtre de page `dim_date[is_holiday]` = Faux pour ne comparer que des jours ordinaires
-(le 1er janvier et le Martin Luther King Day faussent les moyennes).
-
-### Page 3 : « Où ? Zones de prise en charge »
-
-*Question : où positionner les véhicules ?*
-
-| Visuel | Configuration |
-|---|---|
-| **Graphique à barres groupées** | Axe Y : Zone ; Axe X : Chiffre d'affaires. Volet *Filtres* > Zone > Type de filtre **N premiers**, Afficher les éléments : Haut 10, Par valeur : Chiffre d'affaires |
-| **Nuage de points** | Valeurs : Zone ; Axe X : Courses ; Axe Y : Revenu par minute ; Taille : Chiffre d'affaires ; Légende : Borough |
-| **Table** | Zone, Borough, Courses, Chiffre d'affaires, Part du CA, Panier moyen, Revenu par minute. *Mise en forme conditionnelle* > **Barres de données** sur Chiffre d'affaires |
-| **Carte proportionnelle** [Treemap] | Catégorie : Borough ; Valeurs : Chiffre d'affaires |
-| Zone de texte « À retenir » | *14 zones sur 263 génèrent la moitié du CA ; JFK et LaGuardia en tête avec 15,7 % du CA.* |
-
-Le nuage de points est le visuel le plus « analyste » du rapport : en haut à droite, les zones à fort
-volume **et** forte productivité (les priorités) ; en bas à droite, du volume peu rentable.
-
-### Page 4 : « Quelles courses sont les plus rentables ? »
-
-| Visuel | Configuration |
-|---|---|
-| **Histogramme groupé** | Axe X : Type de course ; Axe Y : Revenu par minute |
-| **Histogramme groupé** | Axe X : Tranche de distance ; Axe Y : Revenu par minute |
-| **Graphique à barres groupées** | Axe Y : Type de course ; Axe X : Taux de pourboire (carte) |
-| **Graphique en anneau** | Légende : Mode de paiement ; Valeurs : Courses |
-| Zone de texte « À retenir » | *Les courses de 2 à 5 miles sont les moins rentables à la minute (1,01 $) ; les courses aéroport les plus rentables (1,59 $).* |
-
-### Page 5 : « Qualité des données »
-
-*Question : peut-on faire confiance aux chiffres ?*
-
-| Visuel | Configuration |
-|---|---|
-| 3 cartes | Courses brutes, Courses analysées, Taux de données exploitables |
-| **Graphique à barres groupées** | Axe Y : `data_quality[reason]` ; Axe X : `nb_trips` ; Légende : `data_quality[step]`. Filtre du visuel : `category` n'est pas *Entrée* ni *Sortie* |
-| **Table** | step, reason, nb_trips, pct_of_raw (format Pourcentage) |
-| Zone de texte | *Aucune donnée n'est supprimée silencieusement : 2,3 % des courses rejetées (règles métier) et 0,7 % signalées comme anomalies, chacune avec son motif.* |
-
-**Pourquoi cette page ?** En entreprise, la première question d'un décideur face à un chiffre surprenant
-est « d'où vient ce chiffre ? ». Montrer la qualité des données est un marqueur de maturité.
+| Mesure | Formule | Idée à retenir |
+|---|---|---|
+| Revenu par minute | `DIVIDE([Chiffre d'affaires], [Minutes de course])` | KPI central. Toujours un rapport de sommes, jamais une moyenne de moyennes |
+| Part du CA | `DIVIDE([CA], CALCULATE([CA], ALLSELECTED()))` | `ALLSELECTED` : total de la sélection des segments, en ignorant le découpage du visuel |
+| Courses par jour (hors fériés) | `CALCULATE([Courses par jour], dim_date[Jour férié] = FALSE())` | `CALCULATE` modifie le contexte de filtre |
+| CA top 10 zones | `RANKX` sur les zones, CA renvoyé seulement si rang ≤ 10 | Les autres zones renvoient une valeur vide et disparaissent du graphique |
+| Taux de pourboire (carte) | Pourboires / tarif, filtrés sur la carte | Les pourboires en espèces ne sont pas enregistrés |
 
 ---
 
-## Étape 7 : Finitions (ce qui distingue un rapport professionnel)
+## 4. Les 5 pages du rapport
 
-- **Titres explicites** sur chaque visuel (*Format* > *Général* > *Titre*) : « Revenu par minute selon l'heure »
-  plutôt que « Revenu par minute par hour_label ».
-- **Alignement** : sélectionne plusieurs visuels > *Format* > *Aligner*. Garde des marges régulières.
-- **Info-bulles** : vérifie qu'au survol d'une barre les valeurs sont formatées (devise, %).
-- **Navigation** : insère des *Boutons* > *Navigateur* > **Navigateur de pages** en haut de chaque page.
-- **Titre dynamique** : ajoute la mesure `Titre période` dans une carte en haut de la page 1.
-- **Nom des pages** : double-clic sur l'onglet de page.
+Chaque page répond à **une question métier** (écrite dans son titre), avec les KPI ou le visuel principal
+en haut, le détail en dessous, et un encadré **« À retenir »** qui donne la conclusion.
+
+| Page | Question | Visuels (champs utilisés) |
+|---|---|---|
+| 1. Vue d'ensemble | Comment se porte l'activité ? | Segments : Période (`Date`), Type de course, Mode de paiement, Jour. 6 cartes : Courses, CA, Panier moyen, Revenu par minute, Part du CA aéroports, Taux de pourboire. Courbe : CA par `Date`. Barres : Part des courses et Part du CA par Type de course |
+| 2. Quand ? | À quelles heures renforcer la flotte ? | Matrice `Jour` × `Heure` avec Courses par jour (hors fériés) et fond en dégradé. Histogramme : Courses par Heure. Courbe : Revenu par minute par Heure. Barres : Revenu par minute par Créneau |
+| 3. Où ? | Où positionner les véhicules ? | Barres : CA top 10 zones par Zone. Nuage de points : Zone, légende Borough, X = Courses, Y = Revenu par minute, taille = CA. Table : Zone, Borough, Courses, CA, Part du CA, Panier moyen, Revenu par minute. Carte proportionnelle : CA par Borough |
+| 4. Rentabilité | Quelles courses privilégier ? | Histogrammes : Revenu par minute par Type de course et par Tranche de distance. Barres : Taux de pourboire par Type de course. Anneau : Courses par Mode de paiement |
+| 5. Qualité des données | Peut-on faire confiance aux chiffres ? | 4 cartes : Courses brutes, écartées, analysées, Taux exploitable. Barres : Rejets et anomalies par Motif (légende Catégorie). Table : Étape, Motif, Nb courses, Part du brut |
+
+**Comment lire le nuage de points (page 3)** : en haut à droite, les zones à fort volume **et** forte
+productivité (priorités de positionnement) ; en bas à droite, du volume peu rentable (centre de Manhattan
+aux heures de bureau) ; en haut à gauche, des zones rares mais rentables (aéroports).
 
 ---
 
-## Étape 8 : Enregistrer et publier sur GitHub
+## 5. Personnaliser (recommandé pour t'approprier le rapport)
 
-1. *Fichier* > **Enregistrer sous** > `powerbi/nyc_taxi_dashboard.pbix` (dans le dossier du projet).
-2. *Fichier* > **Exporter** > **Exporter au format PDF** > `powerbi/nyc_taxi_dashboard.pdf`
-   (un recruteur sans Power BI pourra quand même consulter le rapport).
-3. Captures d'écran de chaque page (Windows : `Win + Maj + S`), enregistrées dans `docs/images/` avec ces noms exacts :
+Le projet généré est une base solide. Quelques retouches dans Power BI Desktop le rendront plus personnel :
+- ajuster tailles de police, couleurs des barres et unités d'affichage des cartes (*Format du visuel*) ;
+- ajouter la **ligne moyenne** sur la courbe « Revenu par minute selon l'heure » (volet *Analytique*, icône loupe) ;
+- ajouter un **navigateur de pages** (*Insérer* > *Boutons* > *Navigateur* > *Navigateur de pages*) ;
+- synchroniser les segments de la page 1 sur les autres pages (*Affichage* > **Synchroniser les segments**).
+
+> **Attention** : relancer `python powerbi/generer_pbip.py` régénère le projet et **écrase** les
+> modifications faites dans Power BI Desktop. Après tes retouches manuelles, ne relance plus le script
+> (ou reporte tes modifications dans le script).
+
+---
+
+## 6. Produire les livrables finaux
+
+1. **Fichier `.pbix`** (un seul fichier, pratique pour un recruteur) : *Fichier* > **Enregistrer sous** >
+   type *Fichiers Power BI (.pbix)* > `powerbi/NYC_Taxi_Dashboard.pbix`.
+   Le `.pbix` embarque les données : il s'ouvre sans configurer de chemin.
+2. **Export PDF** : *Fichier* > **Exporter** > **Exporter au format PDF** > `powerbi/NYC_Taxi_Dashboard.pdf`.
+3. **Captures d'écran** de chaque page (Windows : `Win + Maj + S`, zone du canevas uniquement), enregistrées
+   dans `docs/images/` avec ces noms exacts :
    `dashboard_1_vue_ensemble.png`, `dashboard_2_quand.png`, `dashboard_3_ou.png`,
    `dashboard_4_rentabilite.png`, `dashboard_5_qualite.png`.
-4. Dans le `README.md`, section **Dashboard Power BI**, supprime les balises de commentaire `<!--` et `-->`
-   autour des images pour les afficher.
-5. Dans IntelliJ IDEA : menu *Git* > **Commit** (coche les nouveaux fichiers), message par exemple
-   `Ajout du dashboard Power BI et des captures`, puis **Commit and Push** vers la branche `dev`.
+4. Dans le `README.md` (section 8), supprime les lignes `<!--` et `-->` autour des images.
+5. Dans IntelliJ IDEA : *Git* > **Commit** (coche les nouveaux fichiers), message par exemple
+   `Ajout du dashboard finalisé, export PDF et captures`, puis **Commit and Push** vers `dev`.
 
-**Pourquoi IntelliJ pour Git ?** Tu l'utilises déjà : inutile d'ajouter un outil. Power BI Desktop
-n'a pas d'intégration Git, on enregistre donc le `.pbix` dans le dossier du projet et on le versionne depuis l'IDE.
+Le fichier `.gitignore` exclut déjà le cache local de Power BI (`.pbi/cache.abf`, `localSettings.json`),
+qui n'a pas sa place dans Git.

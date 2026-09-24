@@ -1,0 +1,15 @@
+relationship e8a667e3-7b0b-5385-bb76-938225b2f026
+	fromColumn: fact_trips_agg.date_id
+	toColumn: dim_date.date_id
+
+relationship f73d9141-4d31-5aef-b08b-92e4bdd74607
+	fromColumn: fact_trips_agg.hour
+	toColumn: dim_hour.'N° heure'
+
+relationship a81e2ed7-62a5-5e4e-bcf3-9f2825a822f0
+	fromColumn: fact_trips_agg.pickup_location_id
+	toColumn: dim_zone.'ID zone'
+
+relationship 86e3c173-b42f-5949-ae4b-afe1ba7840a4
+	fromColumn: fact_trips_agg.payment_type
+	toColumn: dim_payment.'ID paiement'

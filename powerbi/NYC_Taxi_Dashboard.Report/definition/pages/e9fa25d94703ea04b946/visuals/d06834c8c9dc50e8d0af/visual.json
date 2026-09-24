@@ -1,0 +1,38 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "d06834c8c9dc50e8d0af",
+  "position": {
+    "x": 1060,
+    "y": 150,
+    "z": 10000,
+    "height": 96,
+    "width": 196,
+    "tabOrder": 10000
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Mesures"
+                    }
+                  },
+                  "Property": "Taux de pourboire (carte)"
+                }
+              },
+              "queryRef": "_Mesures.Taux de pourboire (carte)",
+              "nativeQueryRef": "Taux de pourboire (carte"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

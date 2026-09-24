@@ -1,0 +1,24 @@
+table dim_payment
+
+	column 'ID paiement'
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: payment_type
+
+	column 'Mode de paiement'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: payment_label
+
+	partition dim_payment = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DossierDonnees & "dim_payment.parquet")),
+				    Typed = Table.TransformColumnTypes(Source, {{"payment_type", Int64.Type}, {"payment_label", type text}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table

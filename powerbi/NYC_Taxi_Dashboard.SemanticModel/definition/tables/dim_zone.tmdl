@@ -1,0 +1,39 @@
+table dim_zone
+
+	column 'ID zone'
+		dataType: int64
+		isHidden
+		formatString: 0
+		summarizeBy: none
+		sourceColumn: location_id
+
+	column Borough
+		dataType: string
+		summarizeBy: none
+		sourceColumn: borough
+
+	column Zone
+		dataType: string
+		summarizeBy: none
+		sourceColumn: zone
+
+	column 'Type de zone'
+		dataType: string
+		summarizeBy: none
+		sourceColumn: service_zone
+
+	column 'Aéroport'
+		dataType: boolean
+		summarizeBy: none
+		sourceColumn: is_airport
+
+	partition dim_zone = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DossierDonnees & "dim_zone.parquet")),
+				    Typed = Table.TransformColumnTypes(Source, {{"location_id", Int64.Type}, {"borough", type text}, {"zone", type text}, {"service_zone", type text}, {"is_airport", type logical}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Table

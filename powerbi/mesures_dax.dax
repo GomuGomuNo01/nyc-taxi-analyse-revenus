@@ -1,122 +1,116 @@
-// =====================================================================
-// Mesures DAX du dashboard "NYC Taxi : pilotage de l'activité"
-// À créer dans la table _Mesures (voir docs/03_guide_powerbi.md, étape 5).
-//
-// Règle d'or : un ratio = DIVIDE(SUM(numérateur), SUM(dénominateur)).
-// Jamais de moyenne de moyennes : la table est pré-agrégée, une moyenne
-// de lignes donnerait un résultat faux.
-// DIVIDE (plutôt que "/") renvoie BLANK au lieu d'une erreur si le dénominateur est 0.
-// =====================================================================
+// Mesures DAX du dashboard (générées par powerbi/generer_pbip.py, table _Mesures)
+// Règle d'or : un ratio = DIVIDE(SUM(numérateur), SUM(dénominateur)), jamais une moyenne de moyennes.
 
 
-// ---------- 1. Volume et chiffre d'affaires ----------------------------
+// ---------- 1. Volume et CA ---------------------------------------------
 
+// Nombre de courses analysées  (format : #,0)
 Courses =
 SUM ( fact_trips_agg[nb_trips] )
-// Format : Nombre entier, séparateur de milliers
 
+// Montant total payé (tarif, suppléments, taxes, péages, pourboires carte)  (format : $#,0)
 Chiffre d'affaires =
 SUM ( fact_trips_agg[total_amount] )
-// Format : Devise $ (anglais États-Unis), 0 décimale
 
+// Moyenne journalière, valable quel que soit le filtre de dates  (format : #,0)
 Courses par jour =
-AVERAGEX ( VALUES ( dim_date[date] ), [Courses] )
-// Moyenne journalière : se lit correctement quel que soit le filtre de dates.
-// Format : Nombre entier
+AVERAGEX ( VALUES ( dim_date[Date] ), [Courses] )
 
+// Moyenne journalière sur les jours ordinaires uniquement  (format : #,0)
+Courses par jour (hors fériés) =
+CALCULATE ( [Courses par jour], dim_date[Jour férié] = FALSE () )
+
+// Montant moyen d'une course  (format : $#,0.00)
 Panier moyen =
 DIVIDE ( [Chiffre d'affaires], [Courses] )
-// Format : Devise $, 2 décimales
 
 
-// ---------- 2. Productivité (point de vue du chauffeur) ---------------
+// ---------- 2. Productivité ---------------------------------------------
 
+// Temps total passé avec un client  (format : #,0)
 Minutes de course =
 SUM ( fact_trips_agg[duration_minutes] )
 
+// KPI central : ce que rapporte une minute passée avec un client  (format : $#,0.00)
 Revenu par minute =
 DIVIDE ( [Chiffre d'affaires], [Minutes de course] )
-// KPI central : combien rapporte une minute passée avec un client.
-// Format : Devise $, 2 décimales
 
+// Durée moyenne d'une course  (format : #,0.0)
 Durée moyenne (min) =
 DIVIDE ( [Minutes de course], [Courses] )
-// Format : Décimal, 1 décimale
 
+// Distance moyenne d'une course  (format : #,0.00)
 Distance moyenne (miles) =
 DIVIDE ( SUM ( fact_trips_agg[distance_miles] ), [Courses] )
-// Format : Décimal, 2 décimales
 
+// Indicateur de congestion  (format : #,0.0)
 Vitesse moyenne (mph) =
 DIVIDE ( SUM ( fact_trips_agg[distance_miles] ), [Minutes de course] / 60 )
-// Indicateur de congestion. Format : Décimal, 1 décimale
 
+// Écart d'un segment par rapport à la moyenne de la sélection  (format : 0.0 %)
 Écart revenu par minute vs moyenne =
-VAR _moyenne = CALCULATE ( [Revenu par minute], ALLSELECTED () )
-RETURN DIVIDE ( [Revenu par minute] - _moyenne, _moyenne )
-// Compare un segment (heure, zone...) à la moyenne de la sélection.
-// Format : Pourcentage, 1 décimale
+VAR _moyenne = CALCULATE ( [Revenu par minute], ALLSELECTED () ) RETURN DIVIDE ( [Revenu par minute] - _moyenne, _moyenne )
 
 
-// ---------- 3. Parts (poids d'un segment dans le total) ----------------
+// ---------- 3. Parts ----------------------------------------------------
 
+// Poids du segment dans les courses de la sélection  (format : 0.0 %)
 Part des courses =
 DIVIDE ( [Courses], CALCULATE ( [Courses], ALLSELECTED () ) )
-// ALLSELECTED : total de ce qui est sélectionné par les segments (slicers),
-// en ignorant le découpage du visuel. Format : Pourcentage, 1 décimale
 
+// Poids du segment dans le CA de la sélection  (format : 0.0 %)
 Part du CA =
 DIVIDE ( [Chiffre d'affaires], CALCULATE ( [Chiffre d'affaires], ALLSELECTED () ) )
-// Format : Pourcentage, 1 décimale
 
+// CA des courses partant d'un aéroport ou s'y rendant  (format : $#,0)
 CA aéroports =
-CALCULATE ( [Chiffre d'affaires], fact_trips_agg[trip_category] = "Aéroport" )
-// Format : Devise $, 0 décimale
+CALCULATE ( [Chiffre d'affaires], fact_trips_agg[Type de course] = "Aéroport" )
 
+// Poids des aéroports dans le CA  (format : 0.0 %)
 Part du CA aéroports =
 DIVIDE ( [CA aéroports], [Chiffre d'affaires] )
-// Format : Pourcentage, 1 décimale
+
+// CA affiché uniquement pour les 10 premières zones (les autres sont vides donc masquées)  (format : $#,0)
+CA top 10 zones =
+VAR _rang = RANKX ( ALLSELECTED ( dim_zone[Zone] ), [Chiffre d'affaires] ) RETURN IF ( _rang <= 10, [Chiffre d'affaires] )
 
 
-// ---------- 4. Paiement et pourboires ------------------------------------
+// ---------- 4. Paiement -------------------------------------------------
 
+// Part des courses payées par carte  (format : 0.0 %)
 Part paiement carte =
-DIVIDE ( CALCULATE ( [Courses], dim_payment[payment_type] = 1 ), [Courses] )
-// Format : Pourcentage, 1 décimale
+DIVIDE ( CALCULATE ( [Courses], dim_payment[ID paiement] = 1 ), [Courses] )
 
+// Pourboire / tarif, sur carte uniquement (pourboires espèces non enregistrés)  (format : 0.0 %)
 Taux de pourboire (carte) =
-DIVIDE (
-    CALCULATE ( SUM ( fact_trips_agg[tip_amount] ), dim_payment[payment_type] = 1 ),
-    CALCULATE ( SUM ( fact_trips_agg[fare_amount] ), dim_payment[payment_type] = 1 )
-)
-// Calculé sur la carte uniquement : les pourboires en espèces ne sont pas
-// enregistrés par le taximètre. Format : Pourcentage, 1 décimale
+DIVIDE ( CALCULATE ( SUM ( fact_trips_agg[tip_amount] ), dim_payment[ID paiement] = 1 ), CALCULATE ( SUM ( fact_trips_agg[fare_amount] ), dim_payment[ID paiement] = 1 ) )
 
 
-// ---------- 5. Qualité des données (table data_quality) ------------------
+// ---------- 5. Qualité --------------------------------------------------
 
+// Courses présentes dans le fichier brut  (format : #,0)
 Courses brutes =
-CALCULATE ( SUM ( data_quality[nb_trips] ), data_quality[category] = "Entrée" )
-// Format : Nombre entier
+CALCULATE ( SUM ( data_quality[Nb courses] ), data_quality[Catégorie] = "Entrée" )
 
+// Courses retenues après nettoyage et contrôle qualité  (format : #,0)
 Courses analysées =
-CALCULATE ( SUM ( data_quality[nb_trips] ), data_quality[category] = "Sortie" )
-// Format : Nombre entier
+CALCULATE ( SUM ( data_quality[Nb courses] ), data_quality[Catégorie] = "Sortie" )
 
-Taux de données exploitables =
-DIVIDE ( [Courses analysées], [Courses brutes] )
-// Format : Pourcentage, 2 décimales
-
+// Rejets et anomalies  (format : #,0)
 Courses écartées =
 [Courses brutes] - [Courses analysées]
-// Format : Nombre entier
+
+// Part des courses brutes retenues pour l'analyse  (format : 0.00 %)
+Taux de données exploitables =
+DIVIDE ( [Courses analysées], [Courses brutes] )
+
+// Courses écartées, par motif  (format : #,0)
+Rejets et anomalies =
+CALCULATE ( SUM ( data_quality[Nb courses] ), data_quality[Catégorie] IN { "Rejet", "Anomalie" } )
 
 
-// ---------- 6. Titre dynamique (optionnel) --------------------------------
+// ---------- 6. Libellés -------------------------------------------------
 
+// Période couverte par la sélection
 Titre période =
-VAR _debut = MIN ( dim_date[date] )
-VAR _fin = MAX ( dim_date[date] )
-RETURN "Période : du " & FORMAT ( _debut, "dd/mm/yyyy" ) & " au " & FORMAT ( _fin, "dd/mm/yyyy" )
-// À afficher dans une carte ou un titre de visuel (bouton fx) :
-// le lecteur sait toujours sur quelle période portent les chiffres.
+"Du " & FORMAT ( MIN ( dim_date[Date] ), "dd/mm/yyyy" ) & " au " & FORMAT ( MAX ( dim_date[Date] ), "dd/mm/yyyy" )

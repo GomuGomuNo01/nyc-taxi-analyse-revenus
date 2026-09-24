@@ -1,0 +1,132 @@
+table _Mesures
+
+	/// Nombre de courses analysées
+	measure Courses = SUM ( fact_trips_agg[nb_trips] )
+		formatString: #,0
+		displayFolder: 1. Volume et CA
+
+	/// Montant total payé (tarif, suppléments, taxes, péages, pourboires carte)
+	measure 'Chiffre d''affaires' = SUM ( fact_trips_agg[total_amount] )
+		formatString: $#,0
+		displayFolder: 1. Volume et CA
+
+	/// Moyenne journalière, valable quel que soit le filtre de dates
+	measure 'Courses par jour' = AVERAGEX ( VALUES ( dim_date[Date] ), [Courses] )
+		formatString: #,0
+		displayFolder: 1. Volume et CA
+
+	/// Moyenne journalière sur les jours ordinaires uniquement
+	measure 'Courses par jour (hors fériés)' = CALCULATE ( [Courses par jour], dim_date[Jour férié] = FALSE () )
+		formatString: #,0
+		displayFolder: 1. Volume et CA
+
+	/// Montant moyen d'une course
+	measure 'Panier moyen' = DIVIDE ( [Chiffre d'affaires], [Courses] )
+		formatString: $#,0.00
+		displayFolder: 1. Volume et CA
+
+	/// Temps total passé avec un client
+	measure 'Minutes de course' = SUM ( fact_trips_agg[duration_minutes] )
+		formatString: #,0
+		displayFolder: 2. Productivité
+
+	/// KPI central : ce que rapporte une minute passée avec un client
+	measure 'Revenu par minute' = DIVIDE ( [Chiffre d'affaires], [Minutes de course] )
+		formatString: $#,0.00
+		displayFolder: 2. Productivité
+
+	/// Durée moyenne d'une course
+	measure 'Durée moyenne (min)' = DIVIDE ( [Minutes de course], [Courses] )
+		formatString: #,0.0
+		displayFolder: 2. Productivité
+
+	/// Distance moyenne d'une course
+	measure 'Distance moyenne (miles)' = DIVIDE ( SUM ( fact_trips_agg[distance_miles] ), [Courses] )
+		formatString: #,0.00
+		displayFolder: 2. Productivité
+
+	/// Indicateur de congestion
+	measure 'Vitesse moyenne (mph)' = DIVIDE ( SUM ( fact_trips_agg[distance_miles] ), [Minutes de course] / 60 )
+		formatString: #,0.0
+		displayFolder: 2. Productivité
+
+	/// Écart d'un segment par rapport à la moyenne de la sélection
+	measure 'Écart revenu par minute vs moyenne' = VAR _moyenne = CALCULATE ( [Revenu par minute], ALLSELECTED () ) RETURN DIVIDE ( [Revenu par minute] - _moyenne, _moyenne )
+		formatString: 0.0 %
+		displayFolder: 2. Productivité
+
+	/// Poids du segment dans les courses de la sélection
+	measure 'Part des courses' = DIVIDE ( [Courses], CALCULATE ( [Courses], ALLSELECTED () ) )
+		formatString: 0.0 %
+		displayFolder: 3. Parts
+
+	/// Poids du segment dans le CA de la sélection
+	measure 'Part du CA' = DIVIDE ( [Chiffre d'affaires], CALCULATE ( [Chiffre d'affaires], ALLSELECTED () ) )
+		formatString: 0.0 %
+		displayFolder: 3. Parts
+
+	/// CA des courses partant d'un aéroport ou s'y rendant
+	measure 'CA aéroports' = CALCULATE ( [Chiffre d'affaires], fact_trips_agg[Type de course] = "Aéroport" )
+		formatString: $#,0
+		displayFolder: 3. Parts
+
+	/// Poids des aéroports dans le CA
+	measure 'Part du CA aéroports' = DIVIDE ( [CA aéroports], [Chiffre d'affaires] )
+		formatString: 0.0 %
+		displayFolder: 3. Parts
+
+	/// CA affiché uniquement pour les 10 premières zones (les autres sont vides donc masquées)
+	measure 'CA top 10 zones' = VAR _rang = RANKX ( ALLSELECTED ( dim_zone[Zone] ), [Chiffre d'affaires] ) RETURN IF ( _rang <= 10, [Chiffre d'affaires] )
+		formatString: $#,0
+		displayFolder: 3. Parts
+
+	/// Part des courses payées par carte
+	measure 'Part paiement carte' = DIVIDE ( CALCULATE ( [Courses], dim_payment[ID paiement] = 1 ), [Courses] )
+		formatString: 0.0 %
+		displayFolder: 4. Paiement
+
+	/// Pourboire / tarif, sur carte uniquement (pourboires espèces non enregistrés)
+	measure 'Taux de pourboire (carte)' = DIVIDE ( CALCULATE ( SUM ( fact_trips_agg[tip_amount] ), dim_payment[ID paiement] = 1 ), CALCULATE ( SUM ( fact_trips_agg[fare_amount] ), dim_payment[ID paiement] = 1 ) )
+		formatString: 0.0 %
+		displayFolder: 4. Paiement
+
+	/// Courses présentes dans le fichier brut
+	measure 'Courses brutes' = CALCULATE ( SUM ( data_quality[Nb courses] ), data_quality[Catégorie] = "Entrée" )
+		formatString: #,0
+		displayFolder: 5. Qualité
+
+	/// Courses retenues après nettoyage et contrôle qualité
+	measure 'Courses analysées' = CALCULATE ( SUM ( data_quality[Nb courses] ), data_quality[Catégorie] = "Sortie" )
+		formatString: #,0
+		displayFolder: 5. Qualité
+
+	/// Rejets et anomalies
+	measure 'Courses écartées' = [Courses brutes] - [Courses analysées]
+		formatString: #,0
+		displayFolder: 5. Qualité
+
+	/// Part des courses brutes retenues pour l'analyse
+	measure 'Taux de données exploitables' = DIVIDE ( [Courses analysées], [Courses brutes] )
+		formatString: 0.00 %
+		displayFolder: 5. Qualité
+
+	/// Courses écartées, par motif
+	measure 'Rejets et anomalies' = CALCULATE ( SUM ( data_quality[Nb courses] ), data_quality[Catégorie] IN { "Rejet", "Anomalie" } )
+		formatString: #,0
+		displayFolder: 5. Qualité
+
+	/// Période couverte par la sélection
+	measure 'Titre période' = "Du " & FORMAT ( MIN ( dim_date[Date] ), "dd/mm/yyyy" ) & " au " & FORMAT ( MAX ( dim_date[Date] ), "dd/mm/yyyy" )
+		displayFolder: 6. Libellés
+
+	column Colonne
+		dataType: string
+		isHidden
+		summarizeBy: none
+		sourceColumn: Colonne
+
+	partition _Mesures = m
+		mode: import
+		source = #table(type table [Colonne = text], {})
+
+	annotation PBI_ResultType = Table

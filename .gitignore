@@ -13,3 +13,6 @@ powerbi/data/_*_tmp/
 .idea/
 *.iml
 spark-warehouse/
+# Cache local de Power BI Desktop (données et préférences propres au poste)
+powerbi/**/.pbi/localSettings.json
+powerbi/**/.pbi/cache.abf

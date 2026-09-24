@@ -1,0 +1,18 @@
+model Model
+	culture: fr-FR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: fr-FR
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_ProTooling = ["TMDL-Extension"]
+
+ref table fact_trips_agg
+ref table dim_date
+ref table dim_hour
+ref table dim_zone
+ref table dim_payment
+ref table data_quality
+ref table _Mesures

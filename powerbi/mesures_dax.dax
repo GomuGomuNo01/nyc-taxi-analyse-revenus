@@ -1,0 +1,122 @@
+// =====================================================================
+// Mesures DAX du dashboard "NYC Taxi : pilotage de l'activité"
+// À créer dans la table _Mesures (voir docs/03_guide_powerbi.md, étape 5).
+//
+// Règle d'or : un ratio = DIVIDE(SUM(numérateur), SUM(dénominateur)).
+// Jamais de moyenne de moyennes : la table est pré-agrégée, une moyenne
+// de lignes donnerait un résultat faux.
+// DIVIDE (plutôt que "/") renvoie BLANK au lieu d'une erreur si le dénominateur est 0.
+// =====================================================================
+
+
+// ---------- 1. Volume et chiffre d'affaires ----------------------------
+
+Courses =
+SUM ( fact_trips_agg[nb_trips] )
+// Format : Nombre entier, séparateur de milliers
+
+Chiffre d'affaires =
+SUM ( fact_trips_agg[total_amount] )
+// Format : Devise $ (anglais États-Unis), 0 décimale
+
+Courses par jour =
+AVERAGEX ( VALUES ( dim_date[date] ), [Courses] )
+// Moyenne journalière : se lit correctement quel que soit le filtre de dates.
+// Format : Nombre entier
+
+Panier moyen =
+DIVIDE ( [Chiffre d'affaires], [Courses] )
+// Format : Devise $, 2 décimales
+
+
+// ---------- 2. Productivité (point de vue du chauffeur) ---------------
+
+Minutes de course =
+SUM ( fact_trips_agg[duration_minutes] )
+
+Revenu par minute =
+DIVIDE ( [Chiffre d'affaires], [Minutes de course] )
+// KPI central : combien rapporte une minute passée avec un client.
+// Format : Devise $, 2 décimales
+
+Durée moyenne (min) =
+DIVIDE ( [Minutes de course], [Courses] )
+// Format : Décimal, 1 décimale
+
+Distance moyenne (miles) =
+DIVIDE ( SUM ( fact_trips_agg[distance_miles] ), [Courses] )
+// Format : Décimal, 2 décimales
+
+Vitesse moyenne (mph) =
+DIVIDE ( SUM ( fact_trips_agg[distance_miles] ), [Minutes de course] / 60 )
+// Indicateur de congestion. Format : Décimal, 1 décimale
+
+Écart revenu par minute vs moyenne =
+VAR _moyenne = CALCULATE ( [Revenu par minute], ALLSELECTED () )
+RETURN DIVIDE ( [Revenu par minute] - _moyenne, _moyenne )
+// Compare un segment (heure, zone...) à la moyenne de la sélection.
+// Format : Pourcentage, 1 décimale
+
+
+// ---------- 3. Parts (poids d'un segment dans le total) ----------------
+
+Part des courses =
+DIVIDE ( [Courses], CALCULATE ( [Courses], ALLSELECTED () ) )
+// ALLSELECTED : total de ce qui est sélectionné par les segments (slicers),
+// en ignorant le découpage du visuel. Format : Pourcentage, 1 décimale
+
+Part du CA =
+DIVIDE ( [Chiffre d'affaires], CALCULATE ( [Chiffre d'affaires], ALLSELECTED () ) )
+// Format : Pourcentage, 1 décimale
+
+CA aéroports =
+CALCULATE ( [Chiffre d'affaires], fact_trips_agg[trip_category] = "Aéroport" )
+// Format : Devise $, 0 décimale
+
+Part du CA aéroports =
+DIVIDE ( [CA aéroports], [Chiffre d'affaires] )
+// Format : Pourcentage, 1 décimale
+
+
+// ---------- 4. Paiement et pourboires ------------------------------------
+
+Part paiement carte =
+DIVIDE ( CALCULATE ( [Courses], dim_payment[payment_type] = 1 ), [Courses] )
+// Format : Pourcentage, 1 décimale
+
+Taux de pourboire (carte) =
+DIVIDE (
+    CALCULATE ( SUM ( fact_trips_agg[tip_amount] ), dim_payment[payment_type] = 1 ),
+    CALCULATE ( SUM ( fact_trips_agg[fare_amount] ), dim_payment[payment_type] = 1 )
+)
+// Calculé sur la carte uniquement : les pourboires en espèces ne sont pas
+// enregistrés par le taximètre. Format : Pourcentage, 1 décimale
+
+
+// ---------- 5. Qualité des données (table data_quality) ------------------
+
+Courses brutes =
+CALCULATE ( SUM ( data_quality[nb_trips] ), data_quality[category] = "Entrée" )
+// Format : Nombre entier
+
+Courses analysées =
+CALCULATE ( SUM ( data_quality[nb_trips] ), data_quality[category] = "Sortie" )
+// Format : Nombre entier
+
+Taux de données exploitables =
+DIVIDE ( [Courses analysées], [Courses brutes] )
+// Format : Pourcentage, 2 décimales
+
+Courses écartées =
+[Courses brutes] - [Courses analysées]
+// Format : Nombre entier
+
+
+// ---------- 6. Titre dynamique (optionnel) --------------------------------
+
+Titre période =
+VAR _debut = MIN ( dim_date[date] )
+VAR _fin = MAX ( dim_date[date] )
+RETURN "Période : du " & FORMAT ( _debut, "dd/mm/yyyy" ) & " au " & FORMAT ( _fin, "dd/mm/yyyy" )
+// À afficher dans une carte ou un titre de visuel (bouton fx) :
+// le lecteur sait toujours sur quelle période portent les chiffres.

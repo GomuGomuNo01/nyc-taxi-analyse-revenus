@@ -1,2 +1,6 @@
 pyspark>=4.0
+duckdb>=1.0
+pandas
+pyarrow
+matplotlib
 pytest

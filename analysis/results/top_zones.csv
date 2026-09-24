@@ -1,0 +1,11 @@
+zone,borough,nb_courses,chiffre_affaires_usd,part_ca_pct,panier_moyen_usd
+JFK Airport,Queens,185154,10650534.0,9.3,57.52
+LaGuardia Airport,Queens,179299,7393274.0,6.4,41.23
+Midtown Center,Manhattan,305012,4308977.0,3.8,14.13
+Times Sq/Theatre District,Manhattan,256732,3857569.0,3.4,15.03
+Midtown East,Manhattan,270612,3755861.0,3.3,13.88
+Upper East Side South,Manhattan,325249,3710799.0,3.2,11.41
+Upper East Side North,Manhattan,315578,3702176.0,3.2,11.73
+Penn Station/Madison Sq West,Manhattan,253545,3579867.0,3.1,14.12
+Murray Hill,Manhattan,233140,3178571.0,2.8,13.63
+Clinton East,Manhattan,234464,3118775.0,2.7,13.3

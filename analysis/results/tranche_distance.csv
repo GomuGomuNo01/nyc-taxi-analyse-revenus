@@ -1,0 +1,6 @@
+tranche_distance,nb_courses,part_courses_pct,panier_moyen_usd,revenu_par_minute_usd,revenu_par_mile_usd
+1. < 1 mile,2010577,27.0,7.42,1.39,10.97
+2. 1 à 2 miles,2569219,34.5,10.73,1.09,7.59
+3. 2 à 5 miles,1880331,25.3,16.59,1.01,5.59
+4. 5 à 10 miles,563620,7.6,30.2,1.24,4.26
+5. 10 miles et plus,417065,5.6,57.7,1.54,3.73

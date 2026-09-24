@@ -1,0 +1,5 @@
+type_course,nb_courses,part_courses_pct,chiffre_affaires_usd,part_ca_pct,panier_moyen_usd,duree_moyenne_min,revenu_par_minute_usd
+Intra-Manhattan,6340508,85.2,75186039.0,65.5,11.86,10.8,1.1
+Aéroport,475144,6.4,24319177.0,21.2,51.18,32.1,1.59
+Manhattan <> autres boroughs,384077,5.2,11426099.0,10.0,29.75,25.0,1.19
+Hors Manhattan,241083,3.2,3857382.0,3.4,16.0,13.6,1.18

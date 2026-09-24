@@ -1,0 +1,8 @@
+jour,day_of_week,nb_jours,courses_par_jour,ca_par_jour_usd
+Lundi,1,3,230207.0,3588209.0
+Mardi,2,4,246326.0,3832217.0
+Mercredi,3,5,244655.0,3839693.0
+Jeudi,4,5,262331.0,4134877.0
+Vendredi,5,4,262556.0,4102122.0
+Samedi,6,4,244646.0,3503024.0
+Dimanche,7,4,207991.0,3131185.0

@@ -1,0 +1,5 @@
+type_course,taux_pourboire_carte_pct,pourboire_moyen_usd
+Aéroport,21.2,8.5
+Intra-Manhattan,21.0,1.99
+Manhattan <> autres boroughs,15.6,3.93
+Hors Manhattan,13.7,1.98

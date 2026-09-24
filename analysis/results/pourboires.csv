@@ -1,0 +1,5 @@
+mode_paiement,nb_courses,part_courses_pct,pourboires_usd,taux_pourboire_pct
+Carte bancaire,5354426,72.0,13545465.0,20.2
+Espèces,2058943,27.7,638.0,0.0
+Gratuit,20856,0.3,59.0,0.0
+Litige,6587,0.1,40.0,0.0

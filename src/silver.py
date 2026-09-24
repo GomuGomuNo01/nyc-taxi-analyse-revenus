@@ -3,9 +3,9 @@ Silver : nettoie et enrichit les données Bronze.
 Principe : les lignes invalides sont mises en quarantaine (silver/rejected),
 jamais supprimées silencieusement -> le taux de rejet reste auditable.
 """
-import sys
 from pyspark.sql import functions as F
 
+from business_rules import reject_reason
 from config import get_spark, DATA_BRONZE, DATA_SILVER, DATA_RAW
 
 
@@ -17,26 +17,16 @@ def run_silver():
 
     total_in = df.count()
 
-    # --- Règles de validité métier ---------------------------------------
-    # Documentées explicitement plutôt que laissées implicites dans le code :
-    valid = (
-        (F.col("trip_distance") > 0) &
-        (F.col("fare_amount") > 0) &
-        (F.col("passenger_count") > 0) &
-        (F.col("tpep_dropoff_datetime") > F.col("tpep_pickup_datetime")) &
-        (F.col("PULocationID").isNotNull()) &
-        (F.col("DOLocationID").isNotNull())
-    )
+    # --- Règles de validité métier (définies dans business_rules.py) -------
+    # Chaque ligne reçoit son motif de rejet : le métier sait ainsi pourquoi
+    # une donnée a été écartée, et pas seulement combien.
+    df = df.withColumn("reject_reason", reject_reason())
 
-    valid_df = df.filter(valid)
-    rejected_df = df.filter(~valid)
+    valid_df = df.filter(F.col("reject_reason").isNull()).drop("reject_reason")
+    rejected_df = df.filter(F.col("reject_reason").isNotNull())
 
+    rejected_df.write.mode("overwrite").parquet(f"{DATA_SILVER}/rejected")
     reject_count = rejected_df.count()
-    if reject_count > 0:
-        (
-            rejected_df.write.mode("overwrite")
-            .parquet(f"{DATA_SILVER}/rejected")
-        )
 
     # --- Dédoublonnage -----------------------------------------------------
     before_dedupe = valid_df.count()

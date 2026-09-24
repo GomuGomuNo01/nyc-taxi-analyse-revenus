@@ -558,8 +558,10 @@ def build_pages():
     p.add(852, 398, 408, 190, chart("treemap", {
         "Group": [proj(col("dim_zone", "Borough"))],
         "Values": [proj(measure("Chiffre d'affaires"))]}), title="Chiffre d'affaires par borough")
-    takeaway(p, 600, 108, "14 zones sur 263 génèrent la moitié du CA. JFK et LaGuardia arrivent en tête (15,7 % du CA "
-             "à elles deux). En haut à droite du nuage de points : les zones à fort volume et forte productivité.")
+    takeaway(p, 600, 108, "14 zones sur 263 génèrent la moitié du CA. Le nuage de points révèle deux profils : "
+             "les aéroports JFK et LaGuardia (en orange) combinent volume élevé et meilleur revenu par minute "
+             "(1,52 à 1,61 $), tandis que les zones de Manhattan apportent le volume avec une productivité "
+             "moyenne (1,10 à 1,15 $).")
     pages.append(p)
 
     # --- Page 4 : Rentabilité ---------------------------------------------------

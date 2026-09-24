@@ -151,9 +151,12 @@ en haut, le détail en dessous, et un encadré **« À retenir »** qui donne la
 | 4. Rentabilité | Quelles courses privilégier ? | Histogrammes : Revenu par minute par Type de course et par Tranche de distance. Barres : Taux de pourboire par Type de course. Anneau : Courses par Mode de paiement |
 | 5. Qualité des données | Peut-on faire confiance aux chiffres ? | 4 cartes : Courses brutes, écartées, analysées, Taux exploitable. Barres : Rejets et anomalies par Motif (légende Catégorie). Table : Étape, Motif, Courses (étape), Part des courses brutes |
 
-**Comment lire le nuage de points (page 3)** : en haut à droite, les zones à fort volume **et** forte
-productivité (priorités de positionnement) ; en bas à droite, du volume peu rentable (centre de Manhattan
-aux heures de bureau) ; en haut à gauche, des zones rares mais rentables (aéroports).
+**Comment lire le nuage de points (page 3)** : chaque bulle est une zone. Plus elle est à droite, plus elle
+génère de courses ; plus elle est haute, plus une minute de course y rapporte ; sa taille indique son CA.
+On distingue deux profils : les **aéroports** (bulles orange de JFK et LaGuardia) combinent volume élevé
+**et** meilleur revenu par minute (1,52 à 1,61 $) ; les **zones de Manhattan** s'étalent à l'horizontale :
+beaucoup de volume, mais une productivité moyenne (1,10 à 1,15 $). Les petites bulles en haut à gauche
+sont des zones rares dont le revenu par minute, calculé sur peu de courses, est peu représentatif.
 
 ---
 

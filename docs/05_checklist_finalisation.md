@@ -33,7 +33,8 @@ Détail : [docs/03_guide_powerbi.md](03_guide_powerbi.md), sections 2 et 3.
 
 ## Étape 4 : Produire les livrables (20 min)
 
-- [x] 🟨 *Enregistrer sous* > `powerbi/NYC_Taxi_Dashboard.pbix`.
+- [x] 🟨 *Enregistrer sous* > `powerbi/NYC_Taxi_Dashboard.pbix`, publié dans la release
+      [v1.0](https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus/releases/tag/v1.0) (non versionné dans Git).
 - [x] 🟨 *Exporter* > *PDF* > `powerbi/NYC_Taxi_Dashboard.pdf`.
 - [x] 🟨 5 captures d'écran dans `docs/images/` : `dashboard_1_vue_ensemble.png`, `dashboard_2_quand.png`,
       `dashboard_3_ou.png`, `dashboard_4_rentabilite.png`, `dashboard_5_qualite.png`.

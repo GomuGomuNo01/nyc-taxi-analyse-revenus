@@ -176,12 +176,17 @@ Power BI Desktop rendront le rapport plus personnel :
 
 ## 6. Produire les livrables finaux
 
-Les livrables sont déjà dans le dépôt (`powerbi/NYC_Taxi_Dashboard.pbix`, `powerbi/NYC_Taxi_Dashboard.pdf`,
-`docs/images/dashboard_*.png`). Après une retouche du rapport, régénère-les ainsi :
+Le PDF et les captures (`powerbi/NYC_Taxi_Dashboard.pdf`, `docs/images/dashboard_*.png`) sont versionnés dans
+le dépôt. Le `.pbix` ne l'est pas (exclu par `.gitignore`) : il est publié dans les
+[releases GitHub](https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus/releases). Après une retouche du rapport,
+régénère les livrables ainsi :
 
 1. **Fichier `.pbix`** (un seul fichier, pratique pour un recruteur) : *Fichier* > **Enregistrer sous** >
    type *Fichiers Power BI (.pbix)* > `powerbi/NYC_Taxi_Dashboard.pbix`.
    Le `.pbix` embarque les données : il s'ouvre sans configurer de chemin.
+   Publie-le ensuite dans une nouvelle release en **gardant ce nom de fichier** (le bouton de téléchargement du
+   README pointe vers `releases/latest/download/NYC_Taxi_Dashboard.pbix`) :
+   `gh release create v1.1 powerbi/NYC_Taxi_Dashboard.pbix --target main --latest`.
 2. **Export PDF** : *Fichier* > **Exporter** > **Exporter au format PDF** > `powerbi/NYC_Taxi_Dashboard.pdf`.
 3. **Captures d'écran** de chaque page : `Win + Maj + S` sur le canevas, ou conversion des pages du PDF
    en images (PyMuPDF, 150 dpi). Enregistrées dans `docs/images/` avec ces noms exacts :

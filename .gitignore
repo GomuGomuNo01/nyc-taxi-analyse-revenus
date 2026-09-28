@@ -16,3 +16,6 @@ spark-warehouse/
 # Cache local de Power BI Desktop (données et préférences propres au poste)
 powerbi/**/.pbi/localSettings.json
 powerbi/**/.pbi/cache.abf
+
+# Rapport Power BI avec données : publié dans les releases GitHub, pas dans l'historique Git
+powerbi/*.pbix

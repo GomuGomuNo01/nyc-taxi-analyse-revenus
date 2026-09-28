@@ -10,6 +10,11 @@
 Analyse de **7,7 millions de courses réelles** de taxis jaunes new-yorkais (janvier 2019), du besoin
 métier jusqu'au dashboard Power BI et aux recommandations.
 
+[![Télécharger le rapport](https://img.shields.io/badge/T%C3%A9l%C3%A9charger%20le%20rapport-.pbix%20avec%20donn%C3%A9es-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)](https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus/releases/latest/download/NYC_Taxi_Dashboard.pbix)
+
+*Fichier unique, données incluses : il s'ouvre directement dans Power BI Desktop, sans configuration.
+Toutes les versions sont sur la [page des releases](https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus/releases).*
+
 ![Aperçu du dashboard Power BI](docs/images/dashboard_apercu.gif)
 
 | Vous êtes... | Commencez par |
@@ -94,7 +99,8 @@ Cinq pages, chacune répondant à une question, avec un encadré « À retenir �
 
 </details>
 
-Le rapport est consultable sans installer Power BI : [version PDF](powerbi/NYC_Taxi_Dashboard.pdf).
+Pour l'explorer de façon interactive : [télécharger le rapport Power BI](https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus/releases/latest/download/NYC_Taxi_Dashboard.pbix)
+(fichier `.pbix`, données incluses). Sans Power BI : [version PDF](powerbi/NYC_Taxi_Dashboard.pdf).
 
 ## Ce que ce projet démontre
 
@@ -294,7 +300,8 @@ RETURN IF ( _rang <= 10, [Chiffre d'affaires] )
 - **BI as code** : le rapport est livré au format **PBIP** (modèle en TMDL, rapport en PBIR), c'est-à-dire en
   fichiers texte versionnés, entièrement générés par [`powerbi/generer_pbip.py`](powerbi/generer_pbip.py).
 - **Livrables** : projet [`NYC_Taxi_Dashboard.pbip`](powerbi/NYC_Taxi_Dashboard.pbip),
-  fichier [`NYC_Taxi_Dashboard.pbix`](powerbi/NYC_Taxi_Dashboard.pbix) (données embarquées),
+  fichier [`NYC_Taxi_Dashboard.pbix`](https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus/releases/latest/download/NYC_Taxi_Dashboard.pbix)
+  (données embarquées, publié dans les [releases](https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus/releases) et non versionné),
   export [PDF](powerbi/NYC_Taxi_Dashboard.pdf), [thème](powerbi/theme_nyc_taxi.json).
 
 Guide d'ouverture et de compréhension du modèle : [docs/03_guide_powerbi.md](docs/03_guide_powerbi.md).
@@ -323,7 +330,7 @@ Guide d'ouverture et de compréhension du modèle : [docs/03_guide_powerbi.md](d
 ├── sql/analyses_metier.sql     12 requêtes d'analyse
 ├── analysis/                   Exécution SQL (DuckDB), graphiques, résultats CSV
 ├── powerbi/
-│   ├── NYC_Taxi_Dashboard.pbip / .pbix / .pdf
+│   ├── NYC_Taxi_Dashboard.pbip / .pdf   (le .pbix est publié dans les releases)
 │   ├── NYC_Taxi_Dashboard.SemanticModel/   Modèle (TMDL)
 │   ├── NYC_Taxi_Dashboard.Report/          Rapport (PBIR)
 │   ├── generer_pbip.py         Générateur du projet Power BI
@@ -336,8 +343,12 @@ Guide d'ouverture et de compréhension du modèle : [docs/03_guide_powerbi.md](d
 
 ## Reproduire le projet
 
-**Consulter le dashboard** : ouvrir [`powerbi/NYC_Taxi_Dashboard.pbix`](powerbi/NYC_Taxi_Dashboard.pbix) dans
-Power BI Desktop (données incluses), ou le [PDF](powerbi/NYC_Taxi_Dashboard.pdf).
+**Consulter le dashboard** : [télécharger `NYC_Taxi_Dashboard.pbix`](https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus/releases/latest/download/NYC_Taxi_Dashboard.pbix)
+depuis la dernière release et l'ouvrir dans Power BI Desktop (données incluses, aucun chemin à configurer ;
+dans Desktop, les boutons de navigation s'activent par Ctrl + clic), ou consulter le [PDF](powerbi/NYC_Taxi_Dashboard.pdf).
+
+**Ouvrir le projet source** (`powerbi/NYC_Taxi_Dashboard.pbip`) : lancer d'abord `python powerbi/generer_pbip.py`
+pour renseigner le chemin local des données, puis ouvrir le `.pbip` et cliquer sur *Actualiser*.
 
 **Relancer toute la chaîne** (Linux, macOS ou WSL2 ; Java 17 ou plus) :
 

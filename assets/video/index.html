@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NYC Taxi Analytics : présentation vidéo</title>
+  <meta name="description" content="Le projet NYC Taxi en 40 secondes : le principe de la BI, la question de la direction, la chaîne de traitement, le rapport Power BI en action et les constats chiffrés.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='14' fill='%230E0E10'/><rect x='14' y='38' width='72' height='34' rx='8' fill='%23FCB716'/><rect x='36' y='26' width='28' height='14' rx='4' fill='%23FCB716'/><g fill='%230C0C0C'><rect x='18' y='50' width='8' height='8'/><rect x='34' y='50' width='8' height='8'/><rect x='50' y='50' width='8' height='8'/><rect x='66' y='50' width='8' height='8'/></g><circle cx='30' cy='74' r='8' fill='%230C0C0C'/><circle cx='70' cy='74' r='8' fill='%230C0C0C'/></svg>">
+  <style>
+    :root {
+      --asphalte: #0E0E10;
+      --bitume: #1A1A1E;
+      --trait: #3A3A40;
+      --craie: #F6F4EE;
+      --beton: #96969C;
+      --jaune: #FCB716;
+      --noir: #0C0C0C;
+      --titre: "Franklin Gothic Heavy", "Franklin Gothic Demi", "Libre Franklin", "Arial Black", sans-serif;
+      --etiquette: "Franklin Gothic Demi Cond", "Franklin Gothic Medium Cond", "Arial Narrow", "Roboto Condensed", sans-serif;
+      --texte: "Franklin Gothic Book", "Libre Franklin", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --damier: repeating-conic-gradient(var(--noir) 0 25%, var(--craie) 0 50%) 0 0 / 22px 22px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        repeating-linear-gradient(-61deg, transparent 0 44px, rgba(255, 255, 255, 0.025) 44px 46px),
+        repeating-linear-gradient(29deg, transparent 0 228px, rgba(255, 255, 255, 0.04) 228px 232px),
+        var(--asphalte);
+      color: var(--craie);
+      font-family: var(--texte);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 16px 48px;
+    }
+    .bande { width: 100vw; height: 22px; background: var(--damier); margin-bottom: 40px; }
+    .marque {
+      font-family: var(--etiquette); font-size: 0.95rem; letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--beton); margin: 0 0 10px; text-align: center;
+    }
+    h1 {
+      font-family: var(--titre); font-weight: 900; font-size: clamp(2rem, 6vw, 3.6rem); line-height: 1;
+      margin: 0; text-align: center; text-transform: uppercase; letter-spacing: -0.01em;
+    }
+    h1 span { color: var(--jaune); }
+    p.lead { color: var(--beton); margin: 16px 0 30px; text-align: center; max-width: 780px; font-size: 1.08rem; line-height: 1.5; }
+    .player {
+      width: 100%; max-width: 1100px; position: relative;
+      border: 3px solid var(--jaune); border-radius: 10px; overflow: hidden;
+      background: #000; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    }
+    .player::before {
+      content: "40 S"; position: absolute; top: 12px; right: 12px; z-index: 1; pointer-events: none;
+      font-family: var(--etiquette); letter-spacing: 0.2em; font-size: 0.8rem;
+      background: var(--jaune); color: var(--noir); padding: 4px 10px; border-radius: 6px;
+    }
+    video { display: block; width: 100%; height: auto; }
+    nav { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 30px; }
+    nav a {
+      font-family: var(--etiquette); text-transform: uppercase; letter-spacing: 0.12em; font-size: 1rem;
+      color: var(--craie); text-decoration: none; padding: 13px 24px; border-radius: 8px;
+      border: 2px solid var(--trait); background: var(--bitume);
+    }
+    nav a.principal { background: var(--jaune); border-color: var(--jaune); color: var(--noir); }
+    nav a:hover, nav a:focus-visible { outline: 3px solid var(--jaune); outline-offset: 3px; }
+    p.note { color: var(--beton); font-size: 0.92rem; margin-top: 28px; text-align: center; max-width: 780px; line-height: 1.5; }
+    @media (max-width: 600px) { .player::before { display: none; } nav a { width: 100%; text-align: center; } }
+  </style>
+</head>
+<body>
+  <div class="bande" aria-hidden="true"></div>
+  <p class="marque">Portfolio Data Analyst / Power BI</p>
+  <h1><span>NYC Taxi</span> en 40 secondes</h1>
+  <p class="lead">Analyser 7,7 millions de courses de taxis jaunes pour répondre à une question de direction :
+  où et quand positionner les chauffeurs pour maximiser le revenu par minute ?</p>
+
+  <div class="player">
+    <video controls playsinline preload="metadata" poster="presentation-poster.jpg">
+      <source src="NYC_Taxi_presentation.mp4" type="video/mp4">
+      Votre navigateur ne lit pas cette vidéo : <a href="NYC_Taxi_presentation.mp4">la télécharger</a>.
+    </video>
+  </div>
+
+  <nav>
+    <a class="principal" href="https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus/releases/latest/download/NYC_Taxi_Dashboard.pbix">Télécharger le rapport .pbix</a>
+    <a href="https://cedric-kouadio-portfolio.onrender.com/#nyc-taxi-data-engineering">Voir le projet sur le portfolio</a>
+    <a href="https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus">Code source sur GitHub</a>
+  </nav>
+
+  <p class="note">Vidéo animée image par image en Python (Pillow), sur une musique originale synthétisée
+  spécialement pour elle (numpy, scipy) et calée sur chaque changement de scène : aucun droit à céder.</p>
+</body>
+</html>

@@ -11,11 +11,19 @@ Analyse de **7,7 millions de courses réelles** de taxis jaunes new-yorkais (jan
 métier jusqu'au dashboard Power BI et aux recommandations.
 
 [![Télécharger le rapport](https://img.shields.io/badge/T%C3%A9l%C3%A9charger%20le%20rapport-.pbix%20avec%20donn%C3%A9es-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)](https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus/releases/latest/download/NYC_Taxi_Dashboard.pbix)
+[![Voir la présentation](https://img.shields.io/badge/Voir%20la%20pr%C3%A9sentation-vid%C3%A9o%20de%2040%20s-0E0E10?style=for-the-badge&labelColor=FCB716)](https://gomugomuno01.github.io/nyc-taxi-analyse-revenus/presentation/)
 
-*Fichier unique, données incluses : il s'ouvre directement dans Power BI Desktop, sans configuration.
-Toutes les versions sont sur la [page des releases](https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus/releases).*
+*Rapport : fichier unique, données incluses, il s'ouvre directement dans Power BI Desktop, sans configuration ;
+toutes les versions sont sur la [page des releases](https://github.com/GomuGomuNo01/nyc-taxi-analyse-revenus/releases).
+Présentation : le projet, son fonctionnement et ses résultats en 40 secondes, sur une musique originale.*
 
-![Aperçu du dashboard Power BI](docs/images/dashboard_apercu.gif)
+[![Présentation vidéo du projet NYC Taxi, 40 secondes](assets/video/presentation-poster.jpg)](https://gomugomuno01.github.io/nyc-taxi-analyse-revenus/presentation/)
+
+*La présentation vidéo (40 s, 1080p, avec le son) : cliquer sur l'image pour la regarder dans la page « Présentation »
+publiée sur GitHub Pages. Elle explique le principe de la Business Intelligence, la question posée par la direction,
+la chaîne de traitement des données brutes jusqu'au rapport, les 5 pages en action, les constats chiffrés et les
+avantages pour la décision. Elle a été animée image par image en Python ; sa musique a été synthétisée spécialement
+pour elle et calée sur chaque changement de scène, sans aucun droit à céder.*
 
 | Vous êtes... | Commencez par |
 |---|---|
@@ -79,6 +87,8 @@ courses enregistrées « sans passager » : un défaut de saisie à lui signaler
 ## Le dashboard
 
 Cinq pages, chacune répondant à une question, avec un encadré « À retenir » qui donne la conclusion.
+
+![Aperçu du dashboard Power BI : les 5 pages](docs/images/dashboard_apercu.gif)
 
 ![Vue d'ensemble](docs/images/dashboard_1_vue_ensemble.png)
 
@@ -337,6 +347,8 @@ Guide d'ouverture et de compréhension du modèle : [docs/03_guide_powerbi.md](d
 │   ├── data/                   Tables Parquet prêtes à l'emploi
 │   └── mesures_dax.dax, theme_nyc_taxi.json
 ├── docs/                       Cadrage, dictionnaire, guide Power BI, synthèse, images
+├── assets/video/               Présentation vidéo (40 s), son affiche et sa page web
+├── .github/workflows/          Publication de la page de présentation sur GitHub Pages
 ├── tests/                      Tests des règles métier
 └── requirements.txt
 ```
